@@ -2,6 +2,7 @@ import geopandas as gpd
 import pandas as pd
 from flask import Flask
 from numpy import nan
+import contextily as ctx
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #                           Importation                         #
