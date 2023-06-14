@@ -20,7 +20,7 @@ données = {
     'mainOeuvre' : gpd.read_file("fichier_traite_rga/main_d_oeuvre-Tableau 1.csv"),
     'nombreExp' : gpd.read_file("fichier_traite_rga/nombre_exploitation-Tableau 1.csv"),
     'otexCommune' : gpd.read_file("fichier_traite_rga/otex_commune-Tableau 1.csv"),
-    'otex' : gpd.read_file("/Users/feror/DataViz/fichier_traite_rga/otex-Tableau 1.csv"),
+    'otex' : gpd.read_file("fichier_traite_rga/otex-Tableau 1.csv"),
     'statutExp' : gpd.read_file("fichier_traite_rga/statut_exploitation-Tableau 1.csv"),
     'tailleExp' : gpd.read_file("fichier_traite_rga/taille_exploitation-Tableau 1.csv"),
     'valorisation' : gpd.read_file("fichier_traite_rga/valorisation-Tableau 1.csv")
@@ -180,4 +180,10 @@ infosPôle = {
 }
 
 # Nettoyage des données par suppression de CA du Pays Basque
-geoDonnées = geoDonnées.loc[geoDonnées['echelle'] != 'CA du Pays Basque', :]
+geoDonnées = geoDonnées.loc[geoDonnées['echelle'] != 'ca_du_pays_basque', :]
+
+
+
+ax = geoDonnées.plot(column="echelle", cmap="summer", legend=True, legend_kwds={"loc": "center left", "bbox_to_anchor": (1, 0.5), "fmt": "{:.0f}"})
+
+ctx.add_basemap(ax, crs = geoDonnées.crs)
