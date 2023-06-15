@@ -7,7 +7,7 @@ import geopandas as gp
 """
 Cartographie des pôles pays basque ---------------------------------
 """
-filename = "./data/rga-2020.geojson"
+filename = "./rga2020_dataviz_challenge.geojson"
 file = open(filename)
 df = gp.read_file(file)
 dfSansCaPaysBasque = df.loc[df["echelle"] != "ca_du_pays_basque",:]
@@ -22,6 +22,6 @@ df.plot(column="echelle", cmap="YlGn", legend=True,
 """
 Représentation chronologique nb exploitations ----------------------
 """
-amikuze = pd.read_table("./data/fichiersParPole/fts_ra2020_amikuze/evolution_n_exploit_sau-Tableau 1.csv", sep=";")
+amikuze = pd.read_table("./fichiersParPole/fts_ra2020_amikuze/evolution_n_exploit_sau-Tableau 1.csv", sep=";")
 chronoAmikuze = pd.crosstab(amikuze["annee"],amikuze["n_exploit"])
 # chronoAmikuze.plot()
