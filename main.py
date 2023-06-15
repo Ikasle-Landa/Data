@@ -4,6 +4,7 @@ from flask import Flask
 from numpy import nan
 import contextily as cx
 import matplotlib.pyplot as plt
+import mapclassify
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #                           Importation                         #
@@ -199,10 +200,64 @@ ax.set_axis_off()
 ax = geoDonnées.plot(column="echelle",
         legend = True,
         legend_kwds={"loc": "center left", "bbox_to_anchor": (1, 0.5), "fmt": "{:.0f}"})
+ax.set_axis_off()
 cx.add_basemap(ax, crs=geoDonnées.crs)
 
 
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#                             Création                          #
+#                               de                              #
+#                            Dataframe                          #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+#Création dataframe vide
+donneesCheptels=pd.DataFrame(index=["Amikuze", "Cote Basque Adour", "Errobi",
+                                        "Garazi Baigorri", "Iholdi Oztibarre", "Nive Adour",
+                                        "Pays de Bidache", "Pays d'Hasparren", "Soule Xiberoa",
+                                        "Sud Pays Basque"
+                                        ])
+
+#Importer csv des cheptels
+dataCheptels = pd.read_table("fichier_traite_rga/cheptel-Tableau 1.csv", sep=';')
+
+#Récupération des modalités de cheptels
+cheptels = dataCheptels['type'].unique()
+
+#Mettre les colonnes par rapport aux cheptels
+
+for val in cheptels:
+    donneesCheptels[val]='nan'
+
+'''##########################
+#   Etude du nombre d'exploitations
+##########################
+
+#Sortir le ca du pays Basque de l'équation
+geoDonnées = geoDonnées.loc[geoDonnées['echelle'] != 'ca_du_pays_basque', :]
+
+#Importer les chiffres-clés
+chiffresCles =  pd.read_table("./fichier_traite_rga/chiffres_cles_des_poles.csv", sep=';')
+
+exploitationsParPoles = chiffresCles.loc[chiffresCles["nom"] == "nombre total d'exploitations", :]
+
+geoDonneesExplois = geoDonnées.merge(exploitationsParPoles, on='echelle')
+
+#Carte pour 2010
+ax = geoDonneesExplois.plot(column="Part 2010", cmap="summer", legend=True, legend_kwds={"loc": "center left", "bbox_to_anchor": (1, 0.5), "fmt": "{:.0f}"})
+ax.set_axis_off()
+cx.add_basemap(ax, crs = geoDonneesExplois.crs)
+
+#Carte pour 2020
+ax = geoDonneesExplois.plot(column="Part 2020", cmap="summer", legend=True, legend_kwds={"loc": "center left", "bbox_to_anchor": (1, 0.5), "fmt": "{:.0f}"})
+ax.set_axis_off()
+cx.add_basemap(ax, crs = geoDonneesExplois.crs)'''
+
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#                             Tests                             #
+#                               de                              #
+#                           Conversions                         #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 ##############
 #   Tests de Conversions Dataframe to geojson
@@ -218,7 +273,9 @@ df = pd.DataFrame(testJSON)'''
 
 ####         ####         #### 
 
+'''
 #Conversion GeoDataframe to GeoJson
 geoDonneesJSON = geoDonnées.to_json()
 with open('dataframeJSON.geojson' , 'w') as file:
     file.write(geoDonnées.to_json())
+'''
