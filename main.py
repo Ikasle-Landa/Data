@@ -3,6 +3,7 @@ import pandas as pd
 from flask import Flask
 from numpy import nan
 import contextily as ctx
+import geodatasets as gds
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #                           Importation                         #
@@ -10,8 +11,9 @@ import contextily as ctx
 #                             données                           #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-geoDonnées = gpd.read_file("rga2020_dataviz_challenge.geojson")
-données = {
+geoDonnees = gpd.read_file("rga2020_dataviz_challenge.geojson")
+"""
+donnees = {
     'age' : gpd.read_file("fichier_traite_rga/age-Tableau 1.csv"),
     'cheptel' : gpd.read_file("fichier_traite_rga/cheptel-Tableau 1.csv"),
     'devenir' : gpd.read_file("fichier_traite_rga/devenir_exploitation-Tableau 1.csv"),
@@ -26,7 +28,7 @@ données = {
     'valorisation' : gpd.read_file("fichier_traite_rga/valorisation-Tableau 1.csv")
 }
 
-infosPôle = {
+infosPole = {
     "Amikuze" : {
         "age" : pd.read_table("fichiersParPole/fts_ra2020_amikuze/age-Tableau 1.csv", sep=';'),
         "chiffres_cles" : pd.read_table("fichiersParPole/fts_ra2020_amikuze/chiffres_cles-Tableau 1.csv", sep=';'),
@@ -178,12 +180,24 @@ infosPôle = {
         "valorisation" : pd.read_table("fichiersParPole/fts_ra2020_sud_pays_basque/valorisation-Tableau 1.csv", sep=';')
         }
 }
-
+"""
 # Nettoyage des données par suppression de CA du Pays Basque
-geoDonnées = geoDonnées.loc[geoDonnées['echelle'] != 'ca_du_pays_basque', :]
+# geoDonnees = geoDonnees.loc[geoDonnees['echelle'] != 'ca_du_pays_basque', :]
+# ax = geoDonnees.plot(column="echelle", cmap="summer", legend=True, legend_kwds={"loc": "center left", "bbox_to_anchor": (1, 0.5), "fmt": "{:.0f}"})
+# ctx.add_basemap(ax, crs = geoDonnees.crs)
 
 
 
-ax = geoDonnées.plot(column="echelle", cmap="summer", legend=True, legend_kwds={"loc": "center left", "bbox_to_anchor": (1, 0.5), "fmt": "{:.0f}"})
+chiffresCles =  pd.read_table("Data/chiffres_cles_des_poles.csv", sep=';')
 
-ctx.add_basemap(ax, crs = geoDonnées.crs)
+ageParPole = chiffresCles.loc[chiffresCles["type"] == "age_moy", :]
+
+geoDonneesAge = geoDonnees.merge(ageParPole, on='echelle')
+
+ax = geoDonneesAge.plot(column="2010", cmap="summer", legend=True, legend_kwds={"loc": "center left", "bbox_to_anchor": (1, 0.5), "fmt": "{:.0f}"})
+
+ctx.add_basemap(ax, crs = geoDonneesAge.crs)
+
+ax = geoDonneesAge.plot(column="2010", cmap="summer", legend=True, legend_kwds={"loc": "center left", "bbox_to_anchor": (1, 0.5), "fmt": "{:.0f}"})
+
+ctx.add_basemap(ax, crs = geoDonneesAge.crs)
