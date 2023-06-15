@@ -195,6 +195,22 @@ ageParPole = chiffresCles.loc[chiffresCles["type"] == "age_moy", :]
 
 geoDonneesAge = geoDonnees.merge(ageParPole, on='echelle')
 
+mainDf = pd.read_table("Data/devenir_exploitation.csv", sep=";",decimal=",")
+
+geoDonneesDevenirExploitation = geoDonnees.merge(mainDf, on="echelle")
+
+ax = geoDonneesDevenirExploitation.plot(column="pas de départ du chef ou coexploitant envisagé dans l'immédiat",
+                                        cmap="summer", 
+                                        legend=True,
+                                        legend_kwds={'location':'right','label':'blabla','boundaries':[i for i in range(0,101,10)]})
+
+ax.set_axis_off()
+ctx.add_basemap(ax, crs = geoDonneesDevenirExploitation.crs)
+
+
+
+"""
+
 ax = geoDonneesAge.plot(column="2010",cmap="summer", legend=True, legend_kwds={"loc": "center left", "bbox_to_anchor": (1, 0.5), "fmt": "{:.0f}"})
 ax.set_axis_off()
 ctx.add_basemap(ax, crs = geoDonneesAge.crs)
@@ -209,5 +225,5 @@ bins = list(ageParPole["2010"].quantile(['(45,50]','(50,55]','(55,60]']))
 m = folium.Map(location=[43.089, 0.287], # center of the folium map
                min_zoom=6, max_zoom=10, # zoom range
                zoom_start=8) # initial zoom
-
 m
+"""
