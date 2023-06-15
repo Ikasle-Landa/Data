@@ -1,7 +1,9 @@
 import geopandas as gpd
-import pandas as pd
+import pandas as pd, requests, json
 from flask import Flask
 from numpy import nan
+import contextily as cx
+import matplotlib.pyplot as plt
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #                           Importation                         #
@@ -19,7 +21,7 @@ données = {
     'mainOeuvre' : gpd.read_file("fichier_traite_rga/main_d_oeuvre-Tableau 1.csv"),
     'nombreExp' : gpd.read_file("fichier_traite_rga/nombre_exploitation-Tableau 1.csv"),
     'otexCommune' : gpd.read_file("fichier_traite_rga/otex_commune-Tableau 1.csv"),
-    'otex' : gpd.read_file("/Users/feror/DataViz/fichier_traite_rga/otex-Tableau 1.csv"),
+    'otex' : gpd.read_file("fichier_traite_rga/otex-Tableau 1.csv"),
     'statutExp' : gpd.read_file("fichier_traite_rga/statut_exploitation-Tableau 1.csv"),
     'tailleExp' : gpd.read_file("fichier_traite_rga/taille_exploitation-Tableau 1.csv"),
     'valorisation' : gpd.read_file("fichier_traite_rga/valorisation-Tableau 1.csv")
@@ -178,5 +180,30 @@ infosPôle = {
         }
 }
 
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#                            Traitements                        #
+#                               des                             #
+#                             données                           #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
 # Nettoyage des données par suppression de CA du Pays Basque
-geoDonnées = geoDonnées.loc[geoDonnées['echelle'] != 'CA du Pays Basque', :]
+geoDonnées = geoDonnées.loc[geoDonnées['echelle'] != 'ca_du_pays_basque', :]
+
+#Affichage de la carte
+ax=geoDonnées.plot(column="echelle",
+        legend = True,
+        legend_kwds={"loc": "center left", "bbox_to_anchor": (1, 0.5), "fmt": "{:.0f}"})
+ax.set_axis_off()
+
+#Test
+response = requests.get("https://zabal-agriculture.opendata-paysbasque.fr/api/explore/v2.1/catalog/datasets/rga2020_dataviz_challenge/exports/geojson?lang=fr&timezone=Europe%2FBerlin")
+testJSON = response.json()
+
+# turn the json data into a dataframe and see how many rows and what columns we have
+df = pd.DataFrame(testJSON)
+
+#fond de carte
+ax = geoDonnées.plot(column="echelle",
+        legend = True,
+        legend_kwds={"loc": "center left", "bbox_to_anchor": (1, 0.5), "fmt": "{:.0f}"})
+cx.add_basemap(ax, crs=geoDonnées.crs)
