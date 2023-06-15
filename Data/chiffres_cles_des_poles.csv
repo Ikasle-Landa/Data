@@ -7,7 +7,7 @@ Pays d'Hasparren;total UGB;;30144,072;28366,974;-0,058953482
 Pays d'Hasparren;travail total (ETP);;815,7218674;593,2187302;-0,272768386
 Pays d'Hasparren;nombre de chefs d'exploitation;total;686;614;-0,104956268
 Pays d'Hasparren;nombre de chefs d'exploitation;pcent_f;0,290087464;0,28990228;-0,000185183
-Pays d'Hasparren;âge moyen des chefs d'exploitation;age_moy;47,81778426;49,44299674;1,625212486
+Pays d'Hasparren;âge moyen des chefs d'exploitation;age_moy;(45,50];(45,50];1,625212486
 Cote Basque Adour;nombre total d'exploitations;;49;29;-0,408163265
 Cote Basque Adour;SAU totale (ha);;419,79;267,54;-0,362681341
 Cote Basque Adour;SAU moyenne (ha);;8,567142857;9,225517241;0,076848769
@@ -16,7 +16,7 @@ Cote Basque Adour;total UGB;;344,354;129,629;-0,623558896
 Cote Basque Adour;travail total (ETP);;102,037784;61,05555556;-0,401637774
 Cote Basque Adour;nombre de chefs d'exploitation;total;61;38;-0,37704918
 Cote Basque Adour;nombre de chefs d'exploitation;pcent_f;0,31147541;0,263157895;-0,048317515
-Cote Basque Adour;âge moyen des chefs d'exploitation;age_moy;56,47540984;57,52631579;1,050905953
+Cote Basque Adour;âge moyen des chefs d'exploitation;age_moy;(55,60];(55,60];1,050905953
 Garazi Baigorri;nombre total d'exploitations;;875;770;-0,12
 Garazi Baigorri;SAU totale (ha);;23245,24;22115,04;-0,048620707
 Garazi Baigorri;SAU moyenne (ha);;26,56598857;28,72083117;0,081112833
@@ -25,7 +25,7 @@ Garazi Baigorri;total UGB;;50498,77;50532,953;0,000676908
 Garazi Baigorri;travail total (ETP);;1213,173505;1063,514127;-0,123361891
 Garazi Baigorri;nombre de chefs d'exploitation;total;1029;967;-0,060252672
 Garazi Baigorri;nombre de chefs d'exploitation;pcent_f;0,275996113;0,318510858;0,042514746
-Garazi Baigorri;âge moyen des chefs d'exploitation;age_moy;46,04761905;48,05067218;2,003053134
+Garazi Baigorri;âge moyen des chefs d'exploitation;age_moy;(45,50];(45,50];2,003053134
 Nive Adour;nombre total d'exploitations;;113;93;-0,17699115
 Nive Adour;SAU totale (ha);;1858,93;1668,84;-0,10225775
 Nive Adour;SAU moyenne (ha);;16,45070796;17,94451613;0,090805099
@@ -34,7 +34,7 @@ Nive Adour;total UGB;;3448,083;2614,417;-0,241776663
 Nive Adour;travail total (ETP);;91,60255113;130,1743651;0,421077945
 Nive Adour;nombre de chefs d'exploitation;total;118;107;-0,093220339
 Nive Adour;nombre de chefs d'exploitation;pcent_f;0,262711864;0,214953271;-0,047758593
-Nive Adour;âge moyen des chefs d'exploitation;age_moy;53,34745763;53,69158879;0,344131158
+Nive Adour;âge moyen des chefs d'exploitation;age_moy;(50,55];(50,55];0,344131158
 Iholdi Oztibarre;nombre total d'exploitations;;386;356;-0,077720207
 Iholdi Oztibarre;SAU totale (ha);;13377,59;13441,75;0,004796081
 Iholdi Oztibarre;SAU moyenne (ha);;34,65696891;37,75772472;0,089469908
@@ -43,7 +43,7 @@ Iholdi Oztibarre;total UGB;;27650,211;27392,763;-0,009310887
 Iholdi Oztibarre;travail total (ETP);;623,0928371;518,6338889;-0,167645882
 Iholdi Oztibarre;nombre de chefs d'exploitation;total;472;484;0,025423729
 Iholdi Oztibarre;nombre de chefs d'exploitation;pcent_f;0,290254237;0,311983471;0,021729234
-Iholdi Oztibarre;âge moyen des chefs d'exploitation;age_moy;45,80720339;47,26239669;1,455193304
+Iholdi Oztibarre;âge moyen des chefs d'exploitation;age_moy;(45,50];(45,50];1,455193304
 Amikuze;nombre total d'exploitations;;642;552;-0,140186916
 Amikuze;SAU totale (ha);;22075,69;21335,46;-0,033531455
 Amikuze;SAU moyenne (ha);;34,38580997;38,65119565;0,124044939
@@ -52,7 +52,7 @@ Amikuze;total UGB;;38889,215;34461,036;-0,113866505
 Amikuze;travail total (ETP);;838,7611468;671,6155556;-0,199276745
 Amikuze;nombre de chefs d'exploitation;total;814;675;-0,170761671
 Amikuze;nombre de chefs d'exploitation;pcent_f;0,335380835;0,29037037;-0,045010465
-Amikuze;âge moyen des chefs d'exploitation;age_moy;48,55651106;49,89185185;1,335340795
+Amikuze;âge moyen des chefs d'exploitation;age_moy;(45,50];(50,55];1,335340795
 Sud Pays Basque;nombre total d'exploitations;;394;313;-0,205583756
 Sud Pays Basque;SAU totale (ha);;6857,96;6452,74;-0,059087542
 Sud Pays Basque;SAU moyenne (ha);;17,40598985;20,61578275;0,184407375
@@ -61,7 +61,7 @@ Sud Pays Basque;total UGB;;11699,926;10273,297;-0,121934874
 Sud Pays Basque;travail total (ETP);;413,0533198;382,4993651;-0,07397097
 Sud Pays Basque;nombre de chefs d'exploitation;total;438;362;-0,173515982
 Sud Pays Basque;nombre de chefs d'exploitation;pcent_f;0,287671233;0,301104972;0,013433739
-Sud Pays Basque;âge moyen des chefs d'exploitation;age_moy;51,13242009;50,55524862;-0,577171473
+Sud Pays Basque;âge moyen des chefs d'exploitation;age_moy;(50,55];(50,55];-0,577171473
 Errobi;nombre total d'exploitations;;418;324;-0,224880383
 Errobi;SAU totale (ha);;6954,31;6331,29;-0,089587608
 Errobi;SAU moyenne (ha);;16,63710526;19,54101852;0,174544382
@@ -70,7 +70,7 @@ Errobi;total UGB;;11318,372;10949,196;-0,032617412
 Errobi;travail total (ETP);;434,0308817;394,7172222;-0,090578024
 Errobi;nombre de chefs d'exploitation;total;460;375;-0,184782609
 Errobi;nombre de chefs d'exploitation;pcent_f;0,273913043;0,288;0,014086957
-Errobi;âge moyen des chefs d'exploitation;age_moy;49,94782609;49,792;-0,155826087
+Errobi;âge moyen des chefs d'exploitation;age_moy;(50,55];(50,55];-0,155826087
 Pays de Bidache;nombre total d'exploitations;;256;231;-0,09765625
 Pays de Bidache;SAU totale (ha);;9565,1;9181,01;-0,040155356
 Pays de Bidache;SAU moyenne (ha);;37,36367188;39,74463203;0,063723934
@@ -79,7 +79,7 @@ Pays de Bidache;total UGB;;13142,018;11245,08;-0,144341455
 Pays de Bidache;travail total (ETP);;333,1674309;285,2401587;-0,143853413
 Pays de Bidache;nombre de chefs d'exploitation;total;309;283;-0,084142395
 Pays de Bidache;nombre de chefs d'exploitation;pcent_f;0,313915858;0,307420495;-0,006495363
-Pays de Bidache;âge moyen des chefs d'exploitation;age_moy;49,41100324;50,77738516;1,366381923
+Pays de Bidache;âge moyen des chefs d'exploitation;age_moy;(45,50];(50,55];1,366381923
 Soule Xiberoa;nombre total d'exploitations;;746;601;-0,194369973
 Soule Xiberoa;SAU totale (ha);;23736,49;23102,71;-0,026700662
 Soule Xiberoa;SAU moyenne (ha);;31,81835121;38,44044925;0,208121973
@@ -88,4 +88,4 @@ Soule Xiberoa;total UGB;;38776,029;35028,677;-0,096640943
 Soule Xiberoa;travail total (ETP);;968,1851035;909,5529365;-0,06055884
 Soule Xiberoa;nombre de chefs d'exploitation;total;885;802;-0,093785311
 Soule Xiberoa;nombre de chefs d'exploitation;pcent_f;0,336723164;0,344139651;0,007416487
-Soule Xiberoa;âge moyen des chefs d'exploitation;age_moy;47,49152542;49,12718204;1,635656621
+Soule Xiberoa;âge moyen des chefs d'exploitation;age_moy;(45,50];(45,50];1,635656621

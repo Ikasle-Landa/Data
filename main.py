@@ -195,9 +195,9 @@ ageParPole = chiffresCles.loc[chiffresCles["type"] == "age_moy", :]
 geoDonneesAge = geoDonnees.merge(ageParPole, on='echelle')
 
 ax = geoDonneesAge.plot(column="2010", cmap="summer", legend=True, legend_kwds={"loc": "center left", "bbox_to_anchor": (1, 0.5), "fmt": "{:.0f}"})
-
+ax.set_axis_off()
 ctx.add_basemap(ax, crs = geoDonneesAge.crs)
 
-ax = geoDonneesAge.plot(column="2010", cmap="summer", legend=True, legend_kwds={"loc": "center left", "bbox_to_anchor": (1, 0.5), "fmt": "{:.0f}"})
-
+ax = geoDonneesAge.plot(column="2020", cmap="summer", legend=True, legend_kwds={"loc": "center left", "bbox_to_anchor": (1, 0.5), "fmt": "{:.0f}"})
+ax.set_axis_off()
 ctx.add_basemap(ax, crs = geoDonneesAge.crs)
