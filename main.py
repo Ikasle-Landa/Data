@@ -187,6 +187,8 @@ infosPôle = {
 #                             données                           #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+'''
+
 # Nettoyage des données par suppression de CA du Pays Basque
 geoDonnées = geoDonnées.loc[geoDonnées['echelle'] != 'ca_du_pays_basque', :]
 
@@ -203,6 +205,7 @@ ax = geoDonnées.plot(column="echelle",
 ax.set_axis_off()
 cx.add_basemap(ax, crs=geoDonnées.crs)
 
+'''
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #                             Création                          #
@@ -227,6 +230,13 @@ cheptels = dataCheptels['type'].unique()
 
 for val in cheptels:
     donneesCheptels[val]='nan'
+
+#Remplir le dataframe
+
+for val1 in donneesCheptels.columns:
+    for val2 in donneesCheptels.index:
+        donneesCheptels[val1, val2] = dataCheptels.loc[(dataCheptels['echelle'] == val1) & (dataCheptels['type'] == val2) & (dataCheptels['évolution'].isnull() == False), ['évolution']]
+        
 
 '''##########################
 #   Etude du nombre d'exploitations
