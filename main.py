@@ -195,15 +195,30 @@ ax=geoDonnées.plot(column="echelle",
         legend_kwds={"loc": "center left", "bbox_to_anchor": (1, 0.5), "fmt": "{:.0f}"})
 ax.set_axis_off()
 
-#Test
-response = requests.get("https://zabal-agriculture.opendata-paysbasque.fr/api/explore/v2.1/catalog/datasets/rga2020_dataviz_challenge/exports/geojson?lang=fr&timezone=Europe%2FBerlin")
-testJSON = response.json()
-
-# turn the json data into a dataframe and see how many rows and what columns we have
-df = pd.DataFrame(testJSON)
-
-#fond de carte
+#Affichage avec fond de carte
 ax = geoDonnées.plot(column="echelle",
         legend = True,
         legend_kwds={"loc": "center left", "bbox_to_anchor": (1, 0.5), "fmt": "{:.0f}"})
 cx.add_basemap(ax, crs=geoDonnées.crs)
+
+
+
+
+##############
+#   Tests de Conversions Dataframe to geojson
+##############
+
+'''
+#Importer le dataframe
+response = requests.get("https://zabal-agriculture.opendata-paysbasque.fr/api/explore/v2.1/catalog/datasets/rga2020_dataviz_challenge/exports/json?lang=fr&timezone=Europe%2FBerlin")
+testJSON = response.json()
+
+#Conversion en Dataframe
+df = pd.DataFrame(testJSON)'''
+
+####         ####         #### 
+
+#Conversion GeoDataframe to GeoJson
+geoDonneesJSON = geoDonnées.to_json()
+with open('dataframeJSON.geojson' , 'w') as file:
+    file.write(geoDonnées.to_json())
