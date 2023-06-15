@@ -4,6 +4,7 @@ from flask import Flask
 from numpy import nan
 import contextily as ctx
 import geodatasets as gds
+import folium
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #                           Importation                         #
@@ -194,10 +195,19 @@ ageParPole = chiffresCles.loc[chiffresCles["type"] == "age_moy", :]
 
 geoDonneesAge = geoDonnees.merge(ageParPole, on='echelle')
 
-ax = geoDonneesAge.plot(column="2010", cmap="summer", legend=True, legend_kwds={"loc": "center left", "bbox_to_anchor": (1, 0.5), "fmt": "{:.0f}"})
+ax = geoDonneesAge.plot(column="2010",cmap="summer", legend=True, legend_kwds={"loc": "center left", "bbox_to_anchor": (1, 0.5), "fmt": "{:.0f}"})
 ax.set_axis_off()
 ctx.add_basemap(ax, crs = geoDonneesAge.crs)
 
-ax = geoDonneesAge.plot(column="2020", cmap="summer", legend=True, legend_kwds={"loc": "center left", "bbox_to_anchor": (1, 0.5), "fmt": "{:.0f}"})
+ax = geoDonneesAge.plot(column="2020",cmap="summer", legend=True, legend_kwds={"loc": "center left", "bbox_to_anchor": (1, 0.5), "fmt": "{:.0f}"})
 ax.set_axis_off()
 ctx.add_basemap(ax, crs = geoDonneesAge.crs)
+
+
+bins = list(ageParPole["2010"].quantile(['(45,50]','(50,55]','(55,60]']))
+
+m = folium.Map(location=[43.089, 0.287], # center of the folium map
+               min_zoom=6, max_zoom=10, # zoom range
+               zoom_start=8) # initial zoom
+
+m
