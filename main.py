@@ -13,6 +13,7 @@ import folium
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 geoDonnees = gpd.read_file("rga2020_dataviz_challenge.geojson")
+geoDonneesPole = gpd.read_file("contour_capb_poles_territoriaux.geojson")
 """
 donnees = {
     'age' : gpd.read_file("fichier_traite_rga/age-Tableau 1.csv"),
@@ -199,6 +200,7 @@ mainDf = pd.read_table("Data/devenir_exploitation.csv", sep=";",decimal=",")
 
 geoDonneesDevenirExploitation = geoDonnees.merge(mainDf, on="echelle")
 
+"""
 ax = geoDonneesDevenirExploitation.plot(column="pas de départ du chef ou coexploitant envisagé dans l'immédiat",
                                         cmap="summer", 
                                         legend=True,
@@ -208,9 +210,6 @@ ax.set_axis_off()
 ctx.add_basemap(ax, crs = geoDonneesDevenirExploitation.crs)
 
 
-
-"""
-
 ax = geoDonneesAge.plot(column="2010",cmap="summer", legend=True, legend_kwds={"loc": "center left", "bbox_to_anchor": (1, 0.5), "fmt": "{:.0f}"})
 ax.set_axis_off()
 ctx.add_basemap(ax, crs = geoDonneesAge.crs)
@@ -219,11 +218,24 @@ ax = geoDonneesAge.plot(column="2020",cmap="summer", legend=True, legend_kwds={"
 ax.set_axis_off()
 ctx.add_basemap(ax, crs = geoDonneesAge.crs)
 
+"""
 
-bins = list(ageParPole["2010"].quantile(['(45,50]','(50,55]','(55,60]']))
+
 
 m = folium.Map(location=[43.089, 0.287], # center of the folium map
-               min_zoom=6, max_zoom=10, # zoom range
-               zoom_start=8) # initial zoom
+                tiles="OpenStreetMap",
+                min_zoom=6, max_zoom=10, # zoom range
+                zoom_start=8) # initial zoom
+
+
+folium.Choropleth(geo_data=geoDonneesPole,
+                  data=mainDf,
+                  columns=["echelle","pas de départ du chef ou coexploitant envisagé dans l'immédiat"],
+                  key_on="feature.properties.echelle",
+                  fill_color="YlGn",
+                  fill_opacity=0.7,
+                  legend_name="% des exploitation sans départ du chef d'exploitation",).add_to(m)
+
+
 m
-"""
+m.save('carte.html')
