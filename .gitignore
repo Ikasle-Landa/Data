@@ -14,4 +14,4 @@ __pycache__/
 ./DonnéesEnCSVNonTraitées
 ./fichier_traite_rga
 ./fichiersParPole
-./assets
+.vscode
