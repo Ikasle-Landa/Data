@@ -187,11 +187,12 @@ infosPôle = {
 #                             données                           #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-'''
+
 
 # Nettoyage des données par suppression de CA du Pays Basque
 geoDonnées = geoDonnées.loc[geoDonnées['echelle'] != 'ca_du_pays_basque', :]
 
+'''
 #Affichage de la carte
 ax=geoDonnées.plot(column="echelle",
         legend = True,
@@ -204,7 +205,6 @@ ax = geoDonnées.plot(column="echelle",
         legend_kwds={"loc": "center left", "bbox_to_anchor": (1, 0.5), "fmt": "{:.0f}"})
 ax.set_axis_off()
 cx.add_basemap(ax, crs=geoDonnées.crs)
-
 '''
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -223,9 +223,12 @@ donneesCheptels=pd.DataFrame(index=["Amikuze", "Cote Basque Adour", "Errobi",
 #Importer csv des cheptels
 dataCheptels = pd.read_table("fichier_traite_rga/cheptel-Tableau 1.csv", sep=';')
 
-#Remplir le dataframe
+#Remplir le dataframe des cheptels - leur nombre
 donneesCheptels = dataCheptels.loc[:, ['echelle', 'type', 'valeur', 'annee']]
 
+donneesEvolutionCheptels = dataCheptels.loc[: , ['echelle', 'type', 'évolution']]
+
+donneesEvolutionCheptels = donneesEvolutionCheptels.dropna()
 
 '''##########################
 #   Etude du nombre d'exploitations
