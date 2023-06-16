@@ -5,6 +5,7 @@ from numpy import nan
 import contextily as ctx
 import geodatasets as gds
 import folium
+from folium.plugins import StripePattern
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #                           Importation                         #
@@ -200,6 +201,8 @@ mainDf = pd.read_table("Data/devenir_exploitation.csv", sep=";",decimal=",")
 
 geoDonneesDevenirExploitation = geoDonnees.merge(mainDf, on="echelle")
 
+geoDonneesMainDf = geoDonneesPole.merge(mainDf, on="echelle")
+
 """
 ax = geoDonneesDevenirExploitation.plot(column="pas de départ du chef ou coexploitant envisagé dans l'immédiat",
                                         cmap="summer", 
@@ -228,20 +231,58 @@ devenirExploitation = {1:"pas de départ du chef ou coexploitant envisagé dans 
                        6:"total d'exploitations concernées",
                        7:"disparition au profit de l'agrandissement d'une ou plusieurs autres exploitations"}
 
+i=1
+#for i in devenirExploitation:
+m = folium.Map(location=[43.3758766,-1.2983944], # center of the folium map
+                tiles="OpenStreetMap",
+                min_zoom=6, max_zoom=15, # zoom range
+                zoom_start=9) # initial zoom
 
-for i in devenirExploitation:
-    m = folium.Map(location=[43.3758766,-1.2983944], # center of the folium map
-                    tiles="OpenStreetMap",
-                    min_zoom=6, max_zoom=15, # zoom range
-                    zoom_start=9) # initial zoom
+
+folium.Choropleth(geo_data=geoDonneesMainDf,
+                data=geoDonneesMainDf,
+                columns=["echelle",devenirExploitation[i]],
+                key_on="feature.properties.echelle",
+                fill_color="YlGn",
+                fill_opacity=0.8,
+                smooth_factor=0,
+                Highlight= True,
+                line_color = "#0000",
+                name = "Données",
+                show=True,
+                overlay=True,).add_to(m)
+
+style_function = lambda x: {'fillColor': '#ffffff', 
+                            'color':'#000000', 
+                            'fillOpacity': 0.2, 
+                            'weight': 0.1}
+highlight_function = lambda x: {'fillColor': '#000000', 
+                                'color':'#000000', 
+                                'fillOpacity': 0.7, 
+                                'weight': 0.1}
+
+IHM = folium.features.GeoJson(
+    data = geoDonneesMainDf,
+    style_function=style_function, 
+    control=False,
+    highlight_function=highlight_function, 
+    tooltip=folium.features.GeoJsonTooltip(
+        fields=['echelle',devenirExploitation[i]],
+        aliases=['echelle',devenirExploitation[i]],
+        style=("background-color: white; color: #222222; font-family: arial; font-size: 12px; padding: 10px;") 
+    )
+)
+m.add_child(IHM)
+m.keep_in_front(IHM)
 
 
-    folium.Choropleth(geo_data=geoDonneesPole,
-                    data=mainDf,
-                    columns=["echelle",devenirExploitation[i]],
-                    key_on="feature.properties.echelle",
-                    fill_color="YlGn",
-                    fill_opacity=0.7,).add_to(m)
+# Ajout d'une option pour changer le fond de carte 
+folium.TileLayer('Stamen Terrain',name="reliefs",control=True).add_to(m)
 
-    filename = 'carte' + str(i) + '.html'
-    m.save(filename)
+# Ajout de l'interface de controle
+folium.LayerControl(collapsed=False).add_to(m)
+
+
+
+filename = 'carte' + str(i) + '.html'
+m.save(filename)
