@@ -220,22 +220,28 @@ ctx.add_basemap(ax, crs = geoDonneesAge.crs)
 
 """
 
+devenirExploitation = {1:"pas de départ du chef ou coexploitant envisagé dans l'immédiat",
+                       2:"disparition des terres au profit d'un usage non agricole",
+                       3:"nombre d'exploitations non concernées",
+                       4:"reprise par un coexploitant, un membre de la famille ou un tiers",
+                       5:"ne sait pas",
+                       6:"total d'exploitations concernées",
+                       7:"disparition au profit de l'agrandissement d'une ou plusieurs autres exploitations"}
 
 
-m = folium.Map(location=[43.3758766,-1.2983944], # center of the folium map
-                tiles="OpenStreetMap",
-                min_zoom=6, max_zoom=15, # zoom range
-                zoom_start=9) # initial zoom
+for i in devenirExploitation:
+    m = folium.Map(location=[43.3758766,-1.2983944], # center of the folium map
+                    tiles="OpenStreetMap",
+                    min_zoom=6, max_zoom=15, # zoom range
+                    zoom_start=9) # initial zoom
 
 
-folium.Choropleth(geo_data=geoDonneesPole,
-                  data=mainDf,
-                  columns=["echelle","pas de départ du chef ou coexploitant envisagé dans l'immédiat"],
-                  key_on="feature.properties.echelle",
-                  fill_color="YlGn",
-                  fill_opacity=0.7,
-                  legend_name="% des exploitation sans départ du chef d'exploitation",).add_to(m)
+    folium.Choropleth(geo_data=geoDonneesPole,
+                    data=mainDf,
+                    columns=["echelle",devenirExploitation[i]],
+                    key_on="feature.properties.echelle",
+                    fill_color="YlGn",
+                    fill_opacity=0.7,).add_to(m)
 
-
-m
-m.save('carte.html')
+    filename = 'carte' + str(i) + '.html'
+    m.save(filename)
