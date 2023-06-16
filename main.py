@@ -223,20 +223,9 @@ donneesCheptels=pd.DataFrame(index=["Amikuze", "Cote Basque Adour", "Errobi",
 #Importer csv des cheptels
 dataCheptels = pd.read_table("fichier_traite_rga/cheptel-Tableau 1.csv", sep=';')
 
-#Récupération des modalités de cheptels
-cheptels = dataCheptels['type'].unique()
-
-#Mettre les colonnes par rapport aux cheptels
-
-for val in cheptels:
-    donneesCheptels[val]='nan'
-
 #Remplir le dataframe
+donneesCheptels = dataCheptels.loc[:, ['echelle', 'type', 'valeur', 'annee']]
 
-for val1 in donneesCheptels.columns:
-    for val2 in donneesCheptels.index:
-        donneesCheptels[val1, val2] = dataCheptels.loc[(dataCheptels['echelle'] == val1) & (dataCheptels['type'] == val2) & (dataCheptels['évolution'].isnull() == False), ['évolution']]
-        
 
 '''##########################
 #   Etude du nombre d'exploitations
