@@ -222,10 +222,10 @@ ctx.add_basemap(ax, crs = geoDonneesAge.crs)
 
 
 
-m = folium.Map(location=[43.089, 0.287], # center of the folium map
+m = folium.Map(location=[43.3758766,-1.2983944], # center of the folium map
                 tiles="OpenStreetMap",
-                min_zoom=6, max_zoom=10, # zoom range
-                zoom_start=8) # initial zoom
+                min_zoom=6, max_zoom=15, # zoom range
+                zoom_start=9) # initial zoom
 
 
 folium.Choropleth(geo_data=geoDonneesPole,
