@@ -139,4 +139,19 @@ for i in dimension2010 :
     for j in range(len(dimension2010[i])):
         dimension2010[i][j] = (dimension2010[i][j] / total) * 100
 
-dimension2010.T.plot(kind="bar", stacked=True, legend='reverse')
+dimension2010.T.plot(kind="bar", stacked=True)
+
+
+dimension2020 = mainDf2020.pivot(index="dim", columns="echelle",values="n_exploit")
+
+
+echelle = None
+for i in dimension2020 :
+    if i != echelle and i != "dim":
+        total = dimension2020[i].sum()
+        echelle = i
+    for j in range(len(dimension2020[i])):
+        dimension2020[i][j] = (dimension2020[i][j] / total) * 100
+
+dimension2020.T.plot(kind="bar", stacked=True)
+
