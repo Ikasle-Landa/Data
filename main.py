@@ -45,7 +45,21 @@ poles = {
     'Pays d\'Hasparren': pd.read_table("./fichiersParPole/fts_ra2020_pays_d_hasparren/evolution_n_exploit_sau-Tableau 1.csv", sep=";"),
     'Soule Xiberoa': pd.read_table("./fichiersParPole/fts_ra2020_soule_xiberoa/evolution_n_exploit_sau-Tableau 1.csv", sep=";"),
     'Sud Pays Basque': pd.read_table("./fichiersParPole/fts_ra2020_sud_pays_basque/evolution_n_exploit_sau-Tableau 1.csv", sep=";"),
-    'Ca du Pays Basque': pd.read_table("./fichiersParPole/fts_ra2020_amikuze/evolution_n_exploit_sau-Tableau 1.csv", sep=";")
+    'Ca du Pays Basque': pd.read_table("./fichiersParPole/fts_ra2020_ca_du_pays_basque/evolution_n_exploit_sau-Tableau 1.csv", sep=";")
+}
+
+otexPoles = {
+    'Amikuze': pd.read_table("./fichiersParPole/fts_ra2020_amikuze/otex-Tableau 1.csv", sep=";"),
+    'Cote Basque Adour': pd.read_table("./fichiersParPole/fts_ra2020_cote_basque_adour/otex-Tableau 1.csv", sep=";"),
+    'Errobi': pd.read_table("./fichiersParPole/fts_ra2020_errobi/otex-Tableau 1.csv", sep=";"),
+    'Garazi Baigorri': pd.read_table("./fichiersParPole/fts_ra2020_garazi_baigorri/otex-Tableau 1.csv", sep=";"),
+    'Iholdi Oztibarre': pd.read_table("./fichiersParPole/fts_ra2020_iholdi_oztibarre/otex-Tableau 1.csv", sep=";"),
+    'Nive Adour': pd.read_table("./fichiersParPole/fts_ra2020_nive_adour/otex-Tableau 1.csv", sep=";"),
+    'Pays de Bidache': pd.read_table("./fichiersParPole/fts_ra2020_pays_de_bidache/otex-Tableau 1.csv", sep=";"),
+    'Pays d\'Hasparren': pd.read_table("./fichiersParPole/fts_ra2020_pays_d_hasparren/otex-Tableau 1.csv", sep=";"),
+    'Soule Xiberoa': pd.read_table("./fichiersParPole/fts_ra2020_soule_xiberoa/otex-Tableau 1.csv", sep=";"),
+    'Sud Pays Basque': pd.read_table("./fichiersParPole/fts_ra2020_sud_pays_basque/otex-Tableau 1.csv", sep=";"),
+    'Ca du Pays Basque': pd.read_table("./fichiersParPole/fts_ra2020_ca_du_pays_basque/otex-Tableau 1.csv", sep=";")
 }
 
 # Importation des données du 
@@ -60,7 +74,7 @@ dfToChrono = pd.DataFrame(
     index=['Amikuze','Cote Basque Adour','Errobi',
            'Garazi Baigorri','Iholdi Oztibarre','Nive Adour',
            'Pays de Bidache','Pays d\'Hasparren','Soule Xiberoa',
-           'Sud Pays Basque','Ca du Pays Basque'],
+           'Sud Pays Basque','Ca du Pays Basque','France'],
     columns=[1970,1979,1988,2000,2010,2020]
 )
 
@@ -77,19 +91,24 @@ dfComparaisonFrancePaysBasque = pd.DataFrame(
 # année et par pôle
 for key in poles:
     for index,row in poles[key].iterrows():
-        if key != 'Ca du Pays Basque':
-            dfToChrono.loc[key,row[0]] = row[1]
+        dfToChrono.loc[key,row[0]] = row[1]
+
+for i in range(len(nbExploitFrance)):
+    dfToChrono.iloc[11,i] = nbExploitFrance[i]
 
 def racineN(x,n):
     return x**(1/float(n))
 
 # Calcul du taux variation
-l = []
+varSur50ans = []
+varSur1an = []
 for i in range(len(dfToChrono)):
-    l.append((dfToChrono.iloc[i,5],dfToChrono.iloc[i,0]))
-for i in range(len(l)):
-    x=float((l[i][0]/l[i][1]))
-    l[i]="%.2f"%((racineN(x,5)-1)*100)     
+    varSur50ans.append((dfToChrono.iloc[i,5],dfToChrono.iloc[i,0]))
+for i in range(len(varSur50ans)):
+    x=float(varSur50ans[i][0]/varSur50ans[i][1])
+    e=float((varSur50ans[i][0]-varSur50ans[i][1])/varSur50ans[i][0])
+    varSur50ans[i]="%.2f"%((racineN(x,50)-1)*100) 
+    varSur1an.append("%.2f"%e)    
 
 # Ajout des nombres d'exploitation pour chaque
 # année et pour la France et le Pays Basque
@@ -100,18 +119,10 @@ for i in range(len(nbExploitFrance)):
 
 # Inversion des colonnes et lignes
 # pour réaliser le graphique chronologique
-dfToPlot = dfToChrono.transpose()
+dfToPlot = dfToChrono.iloc[0:9,:].transpose()
 dfToPlot.plot(colormap='YlGn',
               logy=True,
               legend=True)
-plt.grid(axis='y', which='both')
-plt.legend(bbox_to_anchor=(1,1))
-plt.title('Série chronologique évolution nombre d\'exploitation')
-
-# Avec limite logarithmique des ordonnées
-dfToPlot.plot(colormap='YlGn',
-              logy=True,
-              legend=True, ylim=(10,10**4))
 plt.grid(axis='y', which='both')
 plt.legend(bbox_to_anchor=(1,1))
 plt.title('Série chronologique évolution nombre d\'exploitation')
@@ -129,5 +140,43 @@ plt.title('Série chronologique évolution nombre d\'exploitation \n au niveau n
 
 
 # Ajout du taux variation au dataframe
-ls=pd.Series(l)
+ls=pd.Series(varSur50ans)
 dfToChrono['variation 1970-2020']=ls.values
+ls=pd.Series(varSur1an)
+dfToChrono['variation sur 1 an']=ls.values
+
+
+
+plt.style.use('ggplot')
+taux1an = []
+ensemblePole = []
+for index,row in dfToChrono.iterrows():
+    if index != 'Ca du Pays Basque' and index != 'France':
+        taux1an.append(float(row['variation sur 1 an']))
+        ensemblePole.append(index)
+
+angles=np.linspace(0.2*np.pi,9,endpoint=False)
+# angles=np.concatenate((angles,[angles[0]]))
+
+# taux1an.append(taux1an[0])
+# ensemblePole.append(ensemblePole[0])
+# fig=plt.figure(figsize=(6,6))
+# ax=fig.add_subplot(polar=True)
+# ax.plot(angles,taux1an)
+# plt.show()
+
+
+
+
+
+
+
+
+"""
+Représentation évolution Otex --------------------------------------------------------
+"""
+col = []
+for key in otexPoles:
+    for index,row in otexPoles[key].iterrows():
+        if row[0] == 2010:
+            col.append(row[2])
