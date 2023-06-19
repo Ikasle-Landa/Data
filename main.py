@@ -221,39 +221,7 @@ donneesCheptels=pd.DataFrame(index=["Amikuze", "Cote Basque Adour", "Errobi",
                                         "Sud Pays Basque"
                                         ])
 
-'''AAAAAAAAAH
-
-#Importer csv des cheptels
-dataCheptels = pd.read_table("fichier_traite_rga/cheptel-Tableau 1.csv", sep=';')
-
-#Remplir le dataframe des cheptels - leur nombre et nettoyage au passage
-donneesCheptels = dataCheptels.loc[:, ['echelle', 'type', 'valeur', 'annee']]
-donneesCheptels = donneesCheptels.loc[donneesCheptels['echelle']!= 'ca_du_pays_basque', :]
-donneesCheptels = donneesCheptels.loc[donneesCheptels['annee'] == 2010, :]
-
-#Dataframe pour les cheptels en 2010
-donnees2010 = dataCheptels.loc[:, ['echelle', 'annee']]
-donnees2010 = donnees2010.loc[donnees2010['echelle']!= 'ca_du_pays_basque', :]
-donnees2010 = donnees2010.loc[donnees2010['annee'] == 2010, :]
-donnees2010 = donnees2010.drop(columns=['annee'])
-
-#Dataframe de l'Evolution des cheptels
-
-donneesEvolutionCheptels = dataCheptels.loc[: , ['echelle', 'type', 'évolution']]
-
-#Tentative de créer un graphique cool
-
-typeCheptels = np.array(['apiculture (nombre de ruches)', 'total Ã©quins', 'total bovins',
-       'total caprins', 'total ensemble du cheptel', 'total ovins',
-       'total porcins', 'total volailles'])
-
-for i in typeCheptels :
-    donnees2010[i] = nan
-
-for i in range(len(donnees2010)):
-    for j in range(1, len(donnees2010.columns)):
-        donnees2010.iloc[i, j] = donneesCheptels.loc[donneesCheptels.columns[j], 'valeur']
-'''
+#Créer les graphes étudiant les cheptels en 2010
 
 testCheptels = pd.read_table("fichier_traite_rga/cheptel-Tableau 1_2.csv", sep=';', index_col=0, na_values=-999)
 
@@ -272,6 +240,23 @@ testCheptels.T.plot(kind="bar",stacked=True)
 plt.show()
 
 
+#Créer les graphes étudiant les cheptels en 2020
+
+testCheptels = pd.read_table("fichier_traite_rga/cheptel-Tableau 1_3.csv", sep=';', index_col=0, na_values=-999)
+
+testCheptels = testCheptels.loc[testCheptels.index != 'ca_du_pays_basque', :]
+
+testCheptels.replace(nan, 0, inplace=True)
+
+testCheptels = testCheptels.T
+
+for i in testCheptels:
+    somme = testCheptels[i].sum()
+    for j in range(len(testCheptels[i])):
+        testCheptels[i][j] = testCheptels[i][j] / somme
+
+testCheptels.T.plot(kind="bar",stacked=True)
+plt.show()
 
 
 '''##########################
