@@ -1,0 +1,12 @@
+# Fichiers système
+.DS_Store
+Thumbs.db
+
+# Dossiers
+__pycache__/
+
+# Autres
+*.pyc
+*.pyo
+*.pyd
+.venv
