@@ -10,3 +10,4 @@ __pycache__/
 *.pyo
 *.pyd
 .venv
+rpg-2020-registre-parcellaire-graphique.geojson
