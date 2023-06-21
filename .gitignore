@@ -11,7 +11,7 @@ __pycache__/
 *.pyd
 .venv
 
-./DonnéesEnCSVNonTraitées
-./fichier_traite_rga
-./fichiersParPole
+DonnéesEnCSVNonTraitées
+fichier_traite_rga
+fichiersParPole
 .vscode

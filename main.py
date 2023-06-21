@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
 import numpy as np
 import pandas as pd
 import geopandas as gp
@@ -102,13 +103,17 @@ def racineN(x,n):
 # Calcul du taux variation
 varSur50ans = []
 varSur1an = []
+varEntre2010et2020 = []
 for i in range(len(dfToChrono)):
     varSur50ans.append((dfToChrono.iloc[i,5],dfToChrono.iloc[i,0]))
+    varEntre2010et2020.append((dfToChrono.iloc[i,5],dfToChrono.iloc[i,4]))
 for i in range(len(varSur50ans)):
     x=float(varSur50ans[i][0]/varSur50ans[i][1])
-    e=float((varSur50ans[i][0]-varSur50ans[i][1])/varSur50ans[i][0])
+    e=float((varSur50ans[i][0]-varSur50ans[i][1])/varSur50ans[i][1])
+    d=float((varEntre2010et2020[i][0]-varEntre2010et2020[i][1])/varEntre2010et2020[i][1])
     varSur50ans[i]="%.2f"%((racineN(x,50)-1)*100) 
-    varSur1an.append("%.2f"%e)    
+    varSur1an.append("%.2f"%e)
+    varEntre2010et2020[i]="%.2f"%d    
 
 # Ajout des nombres d'exploitation pour chaque
 # année et pour la France et le Pays Basque
@@ -141,30 +146,124 @@ plt.title('Série chronologique évolution nombre d\'exploitation \n au niveau n
 
 # Ajout du taux variation au dataframe
 ls=pd.Series(varSur50ans)
-dfToChrono['variation 1970-2020']=ls.values
+dfToChrono['variation_1970-2020']=ls.values
 ls=pd.Series(varSur1an)
-dfToChrono['variation sur 1 an']=ls.values
+dfToChrono['variation_sur_1_an']=ls.values
+ls=pd.Series(varEntre2010et2020)
+dfToChrono['variation_entre_2010_2020']=ls.values
 
 
 
-plt.style.use('ggplot')
-taux1an = []
-ensemblePole = []
-for index,row in dfToChrono.iterrows():
-    if index != 'Ca du Pays Basque' and index != 'France':
-        taux1an.append(float(row['variation sur 1 an']))
-        ensemblePole.append(index)
+# plt.style.use('ggplot')
+# taux1an = []
+# ensemblePole = []
+# for index,row in dfToChrono.iterrows():
+#     if index != 'Ca du Pays Basque' and index != 'France':
+#         taux1an.append(float(row['variation_sur_1_an']))
+#         ensemblePole.append(index)
 
-angles=np.linspace(0.2*np.pi,9,endpoint=False)
-# angles=np.concatenate((angles,[angles[0]]))
 
-# taux1an.append(taux1an[0])
-# ensemblePole.append(ensemblePole[0])
-# fig=plt.figure(figsize=(6,6))
-# ax=fig.add_subplot(polar=True)
-# ax.plot(angles,taux1an)
-# plt.show()
+categories=['taux evolution nb exploit','taux evolution superficie',
+            'pourcentage 1','pourcentage 2','pourcentage 3']
+pole1 = [2,5,2,4,8,2]
+label_loc=np.linspace(start=0,stop=2*np.pi,num=len(pole1))
 
+rad=np.arange(12.)*np.pi/6
+r=np.degrees(rad)
+plt.figure(figsize=(8,8))
+plt.subplot(polar=True)
+plt.plot(label_loc,pole1,label=dfToChrono.index[0])
+plt.title('toto')
+lines, labels = plt.thetagrids(range(0,360,72),labels=categories)
+plt.legend()
+plt.show()
+
+
+
+
+
+"""
+Bubble plots --------------------------------------------------------
+"""
+
+datf=dfToChrono.iloc[0:10,:]
+l=pd.Series(datf.index)
+datf['pole'] = l.values
+datf.reset_index(drop=True,inplace=True)
+
+ls=list(datf[1970])
+pole=list(datf['pole'])
+ann=list(datf[2010])
+color=["lightblue","lightgray","yellow","orange","red",
+       "green","purple","pink","blue","brown"]
+colTest=np.arange(10)
+
+plt.scatter(pole,ann,s=ls,c=colTest,cmap="YlGn")
+plt.ylabel("Nombre exploitation en 2010")
+plt.grid(which='both')
+plt.colorbar()
+plt.xticks(rotation=45,ha="right")
+plt.show()
+
+
+"""
+Bubble plot ca_du_pays_basque -------------------------------------
+"""
+
+datf=dfToChrono.iloc[0:10,:]
+l=pd.Series(datf.index)
+datf['pole'] = l.values
+datf.reset_index(drop=True,inplace=True)
+
+ls=[200,500,800,1100,200,500,800,1100]
+pole=[1500,2108,771,76,1263,1628,1796,90]
+ann=[14782.49,66239.88,38904.91,4470.63,14951.55,55015.5,44160.89,5424.04]
+color=["#2CA9FF","#2CA9FF","#2CA9FF","#2CA9FF",
+       "#FF4252","#FF4252","#FF4252","#FF4252"]
+colTest=np.arange(10)
+
+plt.scatter(pole,ann,s=ls,c=color)
+plt.xlabel("Nombre exploitation")
+plt.ylabel("Surface exploitation")
+plt.grid(which='both')
+plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+# dataFrm=dfToChrono.iloc[0:10,:]
+# total=sum(dataFrm[2010])
+# proportions=[(float(val)/total) for val in dataFrm[2010]]
+# width=40
+# height=10
+# total=width*height
+# tilesPer=[round(prop*total) for prop in proportions]
+
+
+
+# l=list(dataFrm.index)
+# de=list(dataFrm[2010])
+# sz=dataFrm[2010].max()
+# b_normal=dataFrm[2010]/dataFrm[2010].max()
+
+# for index,row in dataFrm.iterrows():
+#     for i in range(len(row)):
+#         row[i] = float(row[i])
+
+
+# ds=list(b_normal)
+
+# plt.figure(figsize=(12,8))
+# plt.scatter(l,de,
+#             color='darkblue',alpha=0.5,s=b_normal*2000)
 
 
 
