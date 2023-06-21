@@ -183,43 +183,10 @@ infosPôle = {
 }
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#                            Traitements                        #
-#                               des                             #
-#                             données                           #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-
-
-
-# Nettoyage des données par suppression de CA du Pays Basque
-geoDonnées = geoDonnées.loc[geoDonnées['echelle'] != 'ca_du_pays_basque', :]
-
-'''
-#Affichage de la carte
-ax=geoDonnées.plot(column="echelle",
-        legend = True,
-        legend_kwds={"loc": "center left", "bbox_to_anchor": (1, 0.5), "fmt": "{:.0f}"})
-ax.set_axis_off()
-
-#Affichage avec fond de carte
-ax = geoDonnées.plot(column="echelle",
-        legend = True,
-        legend_kwds={"loc": "center left", "bbox_to_anchor": (1, 0.5), "fmt": "{:.0f}"})
-ax.set_axis_off()
-cx.add_basemap(ax, crs=geoDonnées.crs)
-'''
-
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #                             Création                          #
 #                               de                              #
-#                            Dataframe                          #
+#                     Dataframe Pour Cheptels                   #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-
-#Création dataframe vide
-donneesCheptels=pd.DataFrame(index=["Amikuze", "Cote Basque Adour", "Errobi",
-                                        "Garazi Baigorri", "Iholdi Oztibarre", "Nive Adour",
-                                        "Pays de Bidache", "Pays d'Hasparren", "Soule Xiberoa",
-                                        "Sud Pays Basque"
-                                        ])
 
 #Créer les graphes étudiant les cheptels en 2010
 
@@ -229,18 +196,113 @@ testCheptels = testCheptels.loc[testCheptels.index != 'ca_du_pays_basque', :]
 
 testCheptels.replace(nan, 0, inplace=True)
 
+#Transposition du dataframe pour les traitements suivants
 testCheptels = testCheptels.T
 
+#Conversion des cheptels en pourcentage sur chaque pole
 for i in testCheptels:
     somme = testCheptels[i].sum()
     for j in range(len(testCheptels[i])):
         testCheptels[i][j] = testCheptels[i][j] / somme
 
-testCheptels.T.plot(kind="bar",stacked=True)
+#Réordonner les indexs
+index=testCheptels.index
+nouvelindex=[index[2], index[4], index[6], index[5], index[1], index[0], index[3]]
+testCheptels = testCheptels.reindex(nouvelindex)
+
+#Trier les données des colonnes dans l'ordre
+testCheptels = testCheptels.T
+testCheptels = testCheptels.sort_values(by = 'total bovins', ascending=False)
+
+#Renommer les colonnes pour être plus clair
+nouvellesColonnes=['Cheptels bovins', 'Cheptels Ovins', 'Cheptels de Volailles', 'Cheptels Porcins',
+                   'Cheptel Equins', 'Apiculture', 'Cheptels Caprins']
+testCheptels.columns = nouvellesColonnes
+
+testCheptels.plot(kind="bar",stacked=True)
+plt.legend(title="Nombre de Cheptels", bbox_to_anchor = (1.05, 1.0), loc = 'upper left')
+plt.xlabel("Pôle étudié")
+plt.ylabel("Pourcentage sur le pôle")
+plt.title("Répartition des cheptels selon le pôle étudié en 2010")
+
+index=testCheptels.index
+colonnes = testCheptels.columns 
+
+####################################
+# Etiquettes du « Cheptels bovins »
+####################################
+
+plt.text(0, testCheptels.loc[index[0],colonnes[0]]/2,
+ str(round(testCheptels.loc[index[0],colonnes[0]]*100,1))+ '%',
+ ha = 'center')
+plt.text(1, testCheptels.loc[index[1],colonnes[0]]/2,
+ str(round(testCheptels.loc[index[1],colonnes[0]]*100,1))+ '%',
+ ha = 'center')
+plt.text(2, testCheptels.loc[index[2],colonnes[0]]/2,
+ str(round(testCheptels.loc[index[2],colonnes[0]]*100,1))+ '%',
+ ha = 'center')
+plt.text(3, testCheptels.loc[index[3],colonnes[0]]/2,
+ str(round(testCheptels.loc[index[3],colonnes[0]]*100,1))+ '%',
+ ha = 'center')
+plt.text(4, testCheptels.loc[index[4],colonnes[0]]/2,
+ str(round(testCheptels.loc[index[4],colonnes[0]]*100,1))+ '%',
+ ha = 'center')
+plt.text(5, testCheptels.loc[index[5],colonnes[0]]/2,
+ str(round(testCheptels.loc[index[5],colonnes[0]]*100,1))+ '%',
+ ha = 'center')
+plt.text(6, testCheptels.loc[index[6],colonnes[0]]/2,
+ str(round(testCheptels.loc[index[6],colonnes[0]]*100,1))+ '%',
+ ha = 'center')
+plt.text(7, testCheptels.loc[index[7],colonnes[0]]/2,
+ str(round(testCheptels.loc[index[7],colonnes[0]]*100,1))+ '%',
+ ha = 'center')
+plt.text(8, testCheptels.loc[index[8],colonnes[0]]/2,
+ str(round(testCheptels.loc[index[8],colonnes[0]]*100,1))+ '%',
+ ha = 'center')
+plt.text(9, testCheptels.loc[index[9],colonnes[0]]/2,
+ str(round(testCheptels.loc[index[9],colonnes[0]]*100,1))+ '%',
+ ha = 'center')
+
+####################################
+# Etiquettes du « Cheptels Ovins »
+####################################
+
+plt.text(0, testCheptels.loc[index[0],colonnes[0]] + testCheptels.loc[index[0],colonnes[1]]/2,
+ str(round(testCheptels.loc[index[0],colonnes[1]]*100,1))+ '%',
+ ha = 'center')
+plt.text(1, testCheptels.loc[index[1],colonnes[0]] + testCheptels.loc[index[1],colonnes[1]]/2,
+ str(round(testCheptels.loc[index[1],colonnes[1]]*100,1))+ '%',
+ ha = 'center')
+plt.text(2, testCheptels.loc[index[2],colonnes[0]] + testCheptels.loc[index[2],colonnes[1]]/2,
+ str(round(testCheptels.loc[index[2],colonnes[1]]*100,1))+ '%',
+ ha = 'center')
+plt.text(3, testCheptels.loc[index[3],colonnes[0]] + testCheptels.loc[index[3],colonnes[1]]/2,
+ str(round(testCheptels.loc[index[3],colonnes[1]]*100,1))+ '%',
+ ha = 'center')
+plt.text(4, testCheptels.loc[index[4],colonnes[0]] + testCheptels.loc[index[4],colonnes[1]]/2,
+ str(round(testCheptels.loc[index[4],colonnes[1]]*100,1))+ '%',
+ ha = 'center')
+plt.text(5, testCheptels.loc[index[5],colonnes[0]] + testCheptels.loc[index[5],colonnes[1]]/2,
+ str(round(testCheptels.loc[index[5],colonnes[1]]*100,1))+ '%',
+ ha = 'center')
+plt.text(6, testCheptels.loc[index[6],colonnes[0]] + testCheptels.loc[index[6],colonnes[1]]/2,
+ str(round(testCheptels.loc[index[6],colonnes[1]]*100,1))+ '%',
+ ha = 'center')
+plt.text(7, testCheptels.loc[index[7],colonnes[0]] + testCheptels.loc[index[7],colonnes[1]]/2,
+ str(round(testCheptels.loc[index[7],colonnes[1]]*100,1))+ '%',
+ ha = 'center')
+plt.text(8, testCheptels.loc[index[8],colonnes[0]] + testCheptels.loc[index[8],colonnes[1]]/2,
+ str(round(testCheptels.loc[index[8],colonnes[1]]*100,1))+ '%',
+ ha = 'center')
+plt.text(9, testCheptels.loc[index[9],colonnes[0]] + testCheptels.loc[index[9],colonnes[1]]/2,
+ str(round(testCheptels.loc[index[9],colonnes[1]]*100,1))+ '%',
+ ha = 'center')
+
 plt.show()
 
-
+################################################
 #Créer les graphes étudiant les cheptels en 2020
+################################################
 
 testCheptels = pd.read_table("fichier_traite_rga/cheptel-Tableau 1_3.csv", sep=';', index_col=0, na_values=-999)
 
@@ -248,65 +310,106 @@ testCheptels = testCheptels.loc[testCheptels.index != 'ca_du_pays_basque', :]
 
 testCheptels.replace(nan, 0, inplace=True)
 
+#Transposition du dataframe pour les traitements suivants
 testCheptels = testCheptels.T
 
+#Conversion des cheptels en pourcentage sur chaque pole
 for i in testCheptels:
     somme = testCheptels[i].sum()
     for j in range(len(testCheptels[i])):
         testCheptels[i][j] = testCheptels[i][j] / somme
 
-testCheptels.T.plot(kind="bar",stacked=True)
+#Réordonner les indexs
+index=testCheptels.index
+nouvelindex=[index[2], index[4], index[6], index[5], index[1], index[0], index[3]]
+testCheptels = testCheptels.reindex(nouvelindex)
+
+#Trier les données des colonnes dans l'ordre
+testCheptels = testCheptels.T
+testCheptels = testCheptels.sort_values(by = 'total bovins', ascending=False)
+
+#Renommer les colonnes pour être plus clair
+nouvellesColonnes=['Cheptels bovins', 'Cheptels Ovins', 'Cheptels de Volailles', 'Cheptels Porcins',
+                   'Cheptel Equins', 'Apiculture', 'Cheptels Caprins']
+testCheptels.columns = nouvellesColonnes
+
+testCheptels.plot(kind="bar",stacked=True)
+plt.legend(title="Nombre de Cheptels", bbox_to_anchor = (1.05, 1.0), loc = 'upper left')
+plt.xlabel("Pôle étudié")
+plt.ylabel("Pourcentage sur le pôle")
+plt.title("Répartition des cheptels selon le pôle étudié en 2020")
+
+index=testCheptels.index
+colonnes = testCheptels.columns 
+
+####################################
+# Etiquettes du « total bovins »
+####################################
+
+plt.text(0, testCheptels.loc[index[0],colonnes[0]]/2,
+ str(round(testCheptels.loc[index[0],colonnes[0]]*100,1))+ '%',
+ ha = 'center')
+plt.text(1, testCheptels.loc[index[1],colonnes[0]]/2,
+ str(round(testCheptels.loc[index[1],colonnes[0]]*100,1))+ '%',
+ ha = 'center')
+plt.text(2, testCheptels.loc[index[2],colonnes[0]]/2,
+ str(round(testCheptels.loc[index[2],colonnes[0]]*100,1))+ '%',
+ ha = 'center')
+plt.text(3, testCheptels.loc[index[3],colonnes[0]]/2,
+ str(round(testCheptels.loc[index[3],colonnes[0]]*100,1))+ '%',
+ ha = 'center')
+plt.text(4, testCheptels.loc[index[4],colonnes[0]]/2,
+ str(round(testCheptels.loc[index[4],colonnes[0]]*100,1))+ '%',
+ ha = 'center')
+plt.text(5, testCheptels.loc[index[5],colonnes[0]]/2,
+ str(round(testCheptels.loc[index[5],colonnes[0]]*100,1))+ '%',
+ ha = 'center')
+plt.text(6, testCheptels.loc[index[6],colonnes[0]]/2,
+ str(round(testCheptels.loc[index[6],colonnes[0]]*100,1))+ '%',
+ ha = 'center')
+plt.text(7, testCheptels.loc[index[7],colonnes[0]]/2,
+ str(round(testCheptels.loc[index[7],colonnes[0]]*100,1))+ '%',
+ ha = 'center')
+plt.text(8, testCheptels.loc[index[8],colonnes[0]]/2,
+ str(round(testCheptels.loc[index[8],colonnes[0]]*100,1))+ '%',
+ ha = 'center')
+plt.text(9, testCheptels.loc[index[9],colonnes[0]]/2,
+ str(round(testCheptels.loc[index[9],colonnes[0]]*100,1))+ '%',
+ ha = 'center')
+
+####################################
+# Etiquettes du « Cheptels Ovins »
+####################################
+
+plt.text(0, testCheptels.loc[index[0],colonnes[0]] + testCheptels.loc[index[0],colonnes[1]]/2,
+ str(round(testCheptels.loc[index[0],colonnes[1]]*100,1))+ '%',
+ ha = 'center')
+plt.text(1, testCheptels.loc[index[1],colonnes[0]] + testCheptels.loc[index[1],colonnes[1]]/2,
+ str(round(testCheptels.loc[index[1],colonnes[1]]*100,1))+ '%',
+ ha = 'center')
+plt.text(2, testCheptels.loc[index[2],colonnes[0]] + testCheptels.loc[index[2],colonnes[1]]/2,
+ str(round(testCheptels.loc[index[2],colonnes[1]]*100,1))+ '%',
+ ha = 'center')
+plt.text(3, testCheptels.loc[index[3],colonnes[0]] + testCheptels.loc[index[3],colonnes[1]]/2,
+ str(round(testCheptels.loc[index[3],colonnes[1]]*100,1))+ '%',
+ ha = 'center')
+plt.text(4, testCheptels.loc[index[4],colonnes[0]] + testCheptels.loc[index[4],colonnes[1]]/2,
+ str(round(testCheptels.loc[index[4],colonnes[1]]*100,1))+ '%',
+ ha = 'center')
+plt.text(5, testCheptels.loc[index[5],colonnes[0]] + testCheptels.loc[index[5],colonnes[1]]/2,
+ str(round(testCheptels.loc[index[5],colonnes[1]]*100,1))+ '%',
+ ha = 'center')
+plt.text(6, testCheptels.loc[index[6],colonnes[0]] + testCheptels.loc[index[6],colonnes[1]]/2,
+ str(round(testCheptels.loc[index[6],colonnes[1]]*100,1))+ '%',
+ ha = 'center')
+plt.text(7, testCheptels.loc[index[7],colonnes[0]] + testCheptels.loc[index[7],colonnes[1]]/2,
+ str(round(testCheptels.loc[index[7],colonnes[1]]*100,1))+ '%',
+ ha = 'center')
+plt.text(8, testCheptels.loc[index[8],colonnes[0]] + testCheptels.loc[index[8],colonnes[1]]/2,
+ str(round(testCheptels.loc[index[8],colonnes[1]]*100,1))+ '%',
+ ha = 'center')
+plt.text(9, testCheptels.loc[index[9],colonnes[0]] + testCheptels.loc[index[9],colonnes[1]]/2,
+ str(round(testCheptels.loc[index[9],colonnes[1]]*100,1))+ '%',
+ ha = 'center')
+
 plt.show()
-
-
-'''##########################
-#   Etude du nombre d'exploitations
-##########################
-
-#Sortir le ca du pays Basque de l'équation
-geoDonnées = geoDonnées.loc[geoDonnées['echelle'] != 'ca_du_pays_basque', :]
-
-#Importer les chiffres-clés
-chiffresCles =  pd.read_table("./fichier_traite_rga/chiffres_cles_des_poles.csv", sep=';')
-
-exploitationsParPoles = chiffresCles.loc[chiffresCles["nom"] == "nombre total d'exploitations", :]
-
-geoDonneesExplois = geoDonnées.merge(exploitationsParPoles, on='echelle')
-
-#Carte pour 2010
-ax = geoDonneesExplois.plot(column="Part 2010", cmap="summer", legend=True, legend_kwds={"loc": "center left", "bbox_to_anchor": (1, 0.5), "fmt": "{:.0f}"})
-ax.set_axis_off()
-cx.add_basemap(ax, crs = geoDonneesExplois.crs)
-
-#Carte pour 2020
-ax = geoDonneesExplois.plot(column="Part 2020", cmap="summer", legend=True, legend_kwds={"loc": "center left", "bbox_to_anchor": (1, 0.5), "fmt": "{:.0f}"})
-ax.set_axis_off()
-cx.add_basemap(ax, crs = geoDonneesExplois.crs)'''
-
-
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#                             Tests                             #
-#                               de                              #
-#                           Conversions                         #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-
-##############
-#   Tests de Conversions Dataframe to geojson
-##############
-
-'''
-#Importer le dataframe
-response = requests.get("https://zabal-agriculture.opendata-paysbasque.fr/api/explore/v2.1/catalog/datasets/rga2020_dataviz_challenge/exports/json?lang=fr&timezone=Europe%2FBerlin")
-testJSON = response.json()
-
-#Conversion en Dataframe
-df = pd.DataFrame(testJSON)'''
-
-####         ####         #### 
-
-'''
-#Conversion GeoDataframe to GeoJson
-geoDonneesJSON = geoDonnées.to_json()
-with open('dataframeJSON.geojson' , 'w') as file:
-    file.write(geoDonnées.to_json())
-'''
