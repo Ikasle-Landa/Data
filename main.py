@@ -6,6 +6,7 @@ import contextily as ctx
 import geodatasets as gds
 import folium
 from folium.plugins import StripePattern
+import matplotlib.pyplot as plt
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #                           Importation                         #
@@ -18,8 +19,8 @@ geoDonneesPole = gpd.read_file("contour_capb_poles_territoriaux.geojson")
 
 # Nettoyage des données par suppression de CA du Pays Basque
 geoDonnees = geoDonnees.loc[geoDonnees['echelle'] != 'ca_du_pays_basque', :]
-# ax = geoDonnees.plot(column="echelle", cmap="summer", legend=True, legend_kwds={"loc": "center left", "bbox_to_anchor": (1, 0.5), "fmt": "{:.0f}"})
-# ctx.add_basemap(ax, crs = geoDonnees.crs)
+#ax = geoDonnees.plot(column="echelle", cmap="summer", legend=True, legend_kwds={"loc": "center left", "bbox_to_anchor": (1, 0.5), "fmt": "{:.0f}"})
+#ctx.add_basemap(ax, crs = geoDonnees.crs)
 
 chiffresCles =  pd.read_table("Data/chiffres_cles_des_poles.csv", sep=';')
 
@@ -41,6 +42,7 @@ ax = geoDonneesDevenirExploitation.plot(column="pas de départ du chef ou coexpl
 
 ax.set_axis_off()
 ctx.add_basemap(ax, crs = geoDonneesDevenirExploitation.crs)
+
 
 
 ax = geoDonneesAge.plot(column="2010",cmap="summer", legend=True, legend_kwds={"loc": "center left", "bbox_to_anchor": (1, 0.5), "fmt": "{:.0f}"})
@@ -123,6 +125,9 @@ mainDf = mainDf.merge(dfTemp,how='right',right_on="echelle",left_on="echelle")
 
 mainDf.replace(-999,nan, inplace=True)
 
+
+
+
 echelles = mainDf["echelle"].drop_duplicates()
 
 mainDf2010 = mainDf.loc[mainDf['annee'] == 2010, :] 
@@ -139,8 +144,12 @@ for i in dimension2010 :
     for j in range(len(dimension2010[i])):
         dimension2010[i][j] = (dimension2010[i][j] / total) * 100
 
-dimension2010.T.plot(kind="bar", stacked=True)
-
+dimension2010 = dimension2010.reindex(columns=['Nive Adour','Errobi','Sud Pays Basque','Cote Basque Adour',"Pays d'Hasparren",'Pays de Bidache','Soule Xiberoa','Amikuze','Iholdi Otzibarre','Garazi Baigorri'])
+dimension2010 = dimension2010.T
+dimension2010 = dimension2010.reindex(columns=['microexploitations','petites','moyennes','grandes'])
+dimension2010.plot(kind="bar", stacked=True, legend='reverse')
+plt.legend(bbox_to_anchor=(1.05,0.5), loc='upper left') # titre : Répartition de la taille des exploitations par pôles en 2010
+plt.show()
 
 dimension2020 = mainDf2020.pivot(index="dim", columns="echelle",values="n_exploit")
 
@@ -153,5 +162,29 @@ for i in dimension2020 :
     for j in range(len(dimension2020[i])):
         dimension2020[i][j] = (dimension2020[i][j] / total) * 100
 
-dimension2020.T.plot(kind="bar", stacked=True)
+dimension2020 = dimension2020.reindex(columns=['Nive Adour','Cote Basque Adour','Errobi','Sud Pays Basque',"Pays d'Hasparren",'Pays de Bidache','Amikuze','Soule Xiberoa','Garazi Baigorri','Iholdi Otzibarre'])
+dimension2020 = dimension2020.T
+dimension2020 = dimension2020.reindex(columns=['microexploitations','petites','moyennes','grandes'])
+dimension2020.plot(kind="bar", stacked=True, legend='reverse')
+plt.legend(bbox_to_anchor=(1.05,0.6), loc='upper left') # titre : Répartition de la taille des exploitations par pôles en 2020
+plt.show()
+
+
+dimension2010 = mainDf2010.pivot(index="dim", columns="echelle",values="sau_ha")
+
+dimension2020 = mainDf2020.pivot(index="dim", columns="echelle",values="sau_ha")
+
+
+echelle = None
+for i in dimension2020 :
+    if i != echelle and i != "dim":
+        echelle = i
+    for j in range(len(dimension2020[i])):
+        val2010 = dimension2010[i][j]
+        dimension2020[i][j] = (dimension2020[i][j] - val2010) / val2010 
+
+dimension2020 = dimension2020.T.reindex(columns=['microexploitations','petites','moyennes','grandes'])
+dimension2020.plot(kind="bar",title="Taux de variation des SAU entre 2010 & 2020", legend='reverse')
+plt.legend(bbox_to_anchor=(1.05,0.6), loc='upper left')
+plt.show()
 
