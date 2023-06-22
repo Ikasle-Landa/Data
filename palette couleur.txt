@@ -1,0 +1,4 @@
+rouge : #D62728 - #FF4252
+vert : #2CA02C - #44F744
+orange : #D1680B - #FF7F0E
+bleu : #1F77B4 - #2CA9FF

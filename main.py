@@ -117,14 +117,13 @@ for i in devenirExploitation:
 
     filename = 'carte' + str(i) + '.html'
     m.save(filename)
-"""
+
 
 dfTemp = pd.read_table('Data/dimensions_exploitation.csv' ,sep=";",decimal=",")
 
 mainDf = mainDf.merge(dfTemp,how='right',right_on="echelle",left_on="echelle")
 
 mainDf.replace(-999,nan, inplace=True)
-
 
 
 
@@ -187,4 +186,51 @@ dimension2020 = dimension2020.T.reindex(columns=['microexploitations','petites',
 dimension2020.plot(kind="bar",title="Taux de variation des SAU entre 2010 & 2020", legend='reverse')
 plt.legend(bbox_to_anchor=(1.05,0.6), loc='upper left')
 plt.show()
+"""
+dfCaPB = pd.read_table('Data/dimension_ca_du_pays_basque.csv',sep=";",decimal=",")
 
+dfCaPB2010 = dfCaPB.loc[dfCaPB['annee'] == 2010,:]
+dfCaPB2020 = dfCaPB.loc[dfCaPB['annee'] == 2020,:]
+
+dfNbExpl2010 = dfCaPB2010.pivot(index="dim", columns="echelle",values="n_exploit")
+
+total = dfNbExpl2010['ca_du_pays_basque'].sum()
+
+for i in range(len(dfNbExpl2010['ca_du_pays_basque'])):
+    dfNbExpl2010['ca_du_pays_basque'][i] = (dfNbExpl2010['ca_du_pays_basque'][i] / total) * 100
+
+dfNbExpl2010 = dfNbExpl2010.T
+dfNbExpl2010 = dfNbExpl2010.reindex(columns=['microexploitations','petites','moyennes','grandes'])
+dfNbExpl2010.plot(kind="bar", stacked=True, legend='reverse')
+plt.legend(bbox_to_anchor=(1.05,0.6), loc='upper left') # titre : Répartition de la taille des exploitations en 2010
+plt.show()
+
+dfNbExpl2020 = dfCaPB2020.pivot(index="dim", columns="echelle",values="n_exploit")
+
+total = dfNbExpl2020['ca_du_pays_basque'].sum()
+
+for i in range(len(dfNbExpl2020['ca_du_pays_basque'])):
+    dfNbExpl2020['ca_du_pays_basque'][i] = (dfNbExpl2020['ca_du_pays_basque'][i] / total) * 100
+
+dfNbExpl2020 = dfNbExpl2020.T
+dfNbExpl2020 = dfNbExpl2020.reindex(columns=['microexploitations','petites','moyennes','grandes'])
+dfNbExpl2020.plot(kind="bar", stacked=True, legend='reverse')
+plt.legend(bbox_to_anchor=(1.05,0.6), loc='upper left') # titre : Répartition de la taille des exploitations en 2020
+plt.show()
+
+
+
+dfNbExpl2010 = dfCaPB2010.pivot(index="dim", columns="echelle",values="sau_ha")
+
+dfNbExpl2020 = dfCaPB2020.pivot(index="dim", columns="echelle",values="sau_ha")
+
+
+
+for i in range(len(dfNbExpl2020['ca_du_pays_basque'])):
+    val2010 = dfNbExpl2010['ca_du_pays_basque'][i]
+    dfNbExpl2020['ca_du_pays_basque'][i] = (dfNbExpl2020['ca_du_pays_basque'][i] - val2010) / val2010 
+
+dfNbExpl2020 = dfNbExpl2020.T.reindex(columns=['microexploitations','petites','moyennes','grandes'])
+dfNbExpl2020.plot(kind="bar",title="Taux de variation des SAU entre 2010 & 2020", legend='reverse')
+plt.legend(bbox_to_anchor=(1.05,0.6), loc='upper left')
+plt.show()
