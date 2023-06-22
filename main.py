@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
+import matplotlib.markers as mrk
 import numpy as np
 import pandas as pd
 import geopandas as gp
@@ -210,65 +211,28 @@ plt.show()
 Bubble plot ca_du_pays_basque -------------------------------------
 """
 
-datf=dfToChrono.iloc[0:10,:]
-l=pd.Series(datf.index)
-datf['pole'] = l.values
-datf.reset_index(drop=True,inplace=True)
+# A utiliser pour le bubble plutot que les données en durs
+# datf=dfToChrono.iloc[0:10,:]
+# l=pd.Series(datf.index)
+# datf['pole'] = l.values
+# datf.reset_index(drop=True,inplace=True)
 
-ls=[200,500,800,1100,200,500,800,1100]
-pole=[1500,2108,771,76,1263,1628,1796,90]
-ann=[14782.49,66239.88,38904.91,4470.63,14951.55,55015.5,44160.89,5424.04]
-color=["#2CA9FF","#2CA9FF","#2CA9FF","#2CA9FF",
-       "#FF4252","#FF4252","#FF4252","#FF4252"]
-colTest=np.arange(10)
 
-plt.scatter(pole,ann,s=ls,c=color)
+size=[150,150,150,150]
+color=["red","orange","blue","green"]
+nb1=[1500,2108,771,76]
+nb2=[1263,1628,1796,90]
+surf1=[14782.49,66239.88,38904.91,4470.63]
+surf2=[14951.55,55015.5,44160.89,5424.04]
+
+a=plt.scatter(nb1,surf1,s=size,color=color,alpha=0.5)
+b=plt.scatter(nb2,surf2,s=size,color=color)
+plt.colorbar()
+plt.legend((a,b),('2010','2020'))
 plt.xlabel("Nombre exploitation")
 plt.ylabel("Surface exploitation")
 plt.grid(which='both')
 plt.show()
-
-
-
-
-
-
-
-
-
-
-
-
-# dataFrm=dfToChrono.iloc[0:10,:]
-# total=sum(dataFrm[2010])
-# proportions=[(float(val)/total) for val in dataFrm[2010]]
-# width=40
-# height=10
-# total=width*height
-# tilesPer=[round(prop*total) for prop in proportions]
-
-
-
-# l=list(dataFrm.index)
-# de=list(dataFrm[2010])
-# sz=dataFrm[2010].max()
-# b_normal=dataFrm[2010]/dataFrm[2010].max()
-
-# for index,row in dataFrm.iterrows():
-#     for i in range(len(row)):
-#         row[i] = float(row[i])
-
-
-# ds=list(b_normal)
-
-# plt.figure(figsize=(12,8))
-# plt.scatter(l,de,
-#             color='darkblue',alpha=0.5,s=b_normal*2000)
-
-
-
-
-
 
 
 """
