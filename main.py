@@ -155,15 +155,9 @@ dfToChrono['variation_entre_2010_2020']=ls.values
 
 
 
-# plt.style.use('ggplot')
-# taux1an = []
-# ensemblePole = []
-# for index,row in dfToChrono.iterrows():
-#     if index != 'Ca du Pays Basque' and index != 'France':
-#         taux1an.append(float(row['variation_sur_1_an']))
-#         ensemblePole.append(index)
-
-
+""" 
+Graphique en radar --------------------------------------------------------------------------
+"""
 categories=['taux evolution nb exploit','taux evolution superficie',
             'pourcentage 1','pourcentage 2','pourcentage 3']
 pole1 = [2,5,2,4,8,2]
@@ -180,35 +174,8 @@ plt.legend()
 plt.show()
 
 
-
-
-
 """
-Bubble plots --------------------------------------------------------
-"""
-
-datf=dfToChrono.iloc[0:10,:]
-l=pd.Series(datf.index)
-datf['pole'] = l.values
-datf.reset_index(drop=True,inplace=True)
-
-ls=list(datf[1970])
-pole=list(datf['pole'])
-ann=list(datf[2010])
-color=["lightblue","lightgray","yellow","orange","red",
-       "green","purple","pink","blue","brown"]
-colTest=np.arange(10)
-
-plt.scatter(pole,ann,s=ls,c=colTest,cmap="YlGn")
-plt.ylabel("Nombre exploitation en 2010")
-plt.grid(which='both')
-plt.colorbar()
-plt.xticks(rotation=45,ha="right")
-plt.show()
-
-
-"""
-Bubble plot ca_du_pays_basque -------------------------------------
+Bubble plot ca_du_pays_basque --------------------------------------------------------
 """
 
 # A utiliser pour le bubble plutot que les données en durs
@@ -218,22 +185,75 @@ Bubble plot ca_du_pays_basque -------------------------------------
 # datf.reset_index(drop=True,inplace=True)
 
 
+# Nb exploit 2010 - 2020 par taille exploit
+# micro2010=list([172,25,262,184,79,71,197,79,212,219,1500,np.nan])
+# micro2020=list([160,16,186,179,75,59,188,83,163,154,1263,np.nan])
+# petite2010=list([292,16,121,535,194,27,268,92,428,135,2108,np.nan])
+# petite2020=list([229,8,97,410,161,19,199,7,308,120,1628,np.nan])
+# moyenne2010=list([158,7,33,150,107,12,101,65,103,35,771,np.nan])
+# moyenne2020=list([144,3,36,170,112,13,108,52,121,37,796,np.nan])
+# grande2010=list([20,np.nan,np.nan,6,6,3,10,20,3,5,76,np.nan])
+# grande2020=list([19,np.nan,5,11,8,np.nan,13,19,9,np.nan,90,np.nan])
+
+# # Sau des poles 2010 - 2020 par taille exploit
+# sauMicro2010=list([1745.31,178.31,1833.05,2306.02,1232.73,618.42,1955.05,873.79,2374.2,1665.61,,np.nan])
+# sauMicro2020=list([2215.84,135.65,1508.2,2205.38,924.2,516.76,2355.55,1308.2,2232.41,1549.36,np.nan])
+# sauPetite2010=list([10228.44,77.76,3467.48,14573.88,6372.97,65.123,8774.94,3637.94,14956.01,3475.23,np.nan])
+# sauPetite2020=list([8816.89,79.9,2783.3,11751.33,6034.5,556.78,6761.42,3044.76,11903.29,3283.33,np.nan])
+# sauMoyenne2010=list([9044.44,139.72,1533.21,6191.65,5434.83,474.28,5015.61,3631.07,61033.83,1306.27,np.nan])
+# sauMoyenne2020=list([8989.93,8.59,1694.27,7729.47,6125.36,526.51,5779.08,3522.89,8275.95,1508.84,np.nan])
+# sauGrande2010=list([1057.5,np.nan,np.nan,173.69,337.06,91,561.21,1422.3,272.45,410.85,np.nan])
+# sauGrande2020=list([1312.8,np.nan,345.52,428.86,357.69,np.nan,759.55,1305.16,691.06,np.nan,np.nan])
+
+# dfToChrono['nb_exploit_micro_2010']=micro2010
+# dfToChrono['nb_exploit_petite_2010']=petite2010
+# dfToChrono['nb_exploit_moyenne_2010']=moyenne2010
+# dfToChrono['nb_exploit_grande_2010']=grande2010
+
+# dfToChrono['nb_exploit_micro_2020']=micro2020
+# dfToChrono['nb_exploit_petite_2020']=petite2020
+# dfToChrono['nb_exploit_moyenne_2020']=moyenne2020
+# dfToChrono['nb_exploit_grande_2020']=grande2020
+
+# dfToChrono['sau_micro_2010']=sauMicro2010
+# dfToChrono['sau_petite_2010']=sauPetite2010
+# dfToChrono['sau_moyenne_2010']=sauMoyenne2010
+# dfToChrono['sau_grande_2010']=sauGrande2010
+
+# dfToChrono['sau_micro_2020']=sauMicro2020
+# dfToChrono['sau_petite_2020']=sauPetite2020
+# dfToChrono['sau_moyenne_2020']=sauMoyenne2020
+# dfToChrono['sau_grande_2020']=sauGrande2020
+
+# for index,row in dfToChrono.iterrows():
+#     print(row[9:17])
+
+
 size=[150,150,150,150]
 color=["red","orange","blue","green"]
 nb1=[1500,2108,771,76]
 nb2=[1263,1628,1796,90]
 surf1=[14782.49,66239.88,38904.91,4470.63]
 surf2=[14951.55,55015.5,44160.89,5424.04]
-
+text=["micro\nexploitation\n2010","petite\nexploitation\n2010","moyenne\nexploitation\n2010","grande\nexploitation\n2010"]
+text2=["micro\nexploitation\n2020","petite\nexploitation\n2020","moyenne\nexploitation\n2020","grande\nexploitation\n2020"]
 a=plt.scatter(nb1,surf1,s=size,color=color,alpha=0.5)
 b=plt.scatter(nb2,surf2,s=size,color=color)
-plt.colorbar()
-plt.legend((a,b),('2010','2020'))
 plt.xlabel("Nombre exploitation")
 plt.ylabel("Surface exploitation")
 plt.grid(which='both')
+for i in range(len(text)):
+    if i == 0:
+        plt.annotate(text[i],(nb1[i]-150,surf1[i]+4000))
+        plt.annotate(text2[i],(nb2[i]-150,surf2[i]-10000))
+    elif i == 3:
+        plt.annotate(text[i],(nb1[i]-50,surf1[i]+5000))
+        plt.annotate(text2[i],(nb2[i]+150,surf2[i]-2800))
+    else:
+        plt.annotate(text[i],(nb1[i]-150,surf1[i]-10000))
+        plt.annotate(text2[i],(nb2[i]-150,surf2[i]-10000))
+# plt.legend((a,b),('2010','2020'))
 plt.show()
-
 
 """
 Représentation évolution Otex --------------------------------------------------------
