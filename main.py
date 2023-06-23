@@ -1,6 +1,7 @@
 import geopandas as gpd
 import pandas as pd
 from flask import Flask
+import numpy as np
 from numpy import nan
 import contextily as ctx
 import geodatasets as gds
@@ -117,7 +118,7 @@ for i in devenirExploitation:
 
     filename = 'carte' + str(i) + '.html'
     m.save(filename)
-
+"""
 
 dfTemp = pd.read_table('Data/dimensions_exploitation.csv' ,sep=";",decimal=",")
 
@@ -186,7 +187,8 @@ dimension2020 = dimension2020.T.reindex(columns=['microexploitations','petites',
 dimension2020.plot(kind="bar",title="Taux de variation des SAU entre 2010 & 2020", legend='reverse')
 plt.legend(bbox_to_anchor=(1.05,0.6), loc='upper left')
 plt.show()
-"""
+
+
 dfCaPB = pd.read_table('Data/dimension_ca_du_pays_basque.csv',sep=";",decimal=",")
 
 dfCaPB2010 = dfCaPB.loc[dfCaPB['annee'] == 2010,:]
@@ -202,7 +204,8 @@ for i in range(len(dfNbExpl2010['ca_du_pays_basque'])):
 dfNbExpl2010 = dfNbExpl2010.T
 dfNbExpl2010 = dfNbExpl2010.reindex(columns=['microexploitations','petites','moyennes','grandes'])
 dfNbExpl2010.plot(kind="bar", stacked=True, legend='reverse')
-plt.legend(bbox_to_anchor=(1.05,0.6), loc='upper left') # titre : Répartition de la taille des exploitations en 2010
+plt.legend(title="Pôles",bbox_to_anchor=(1.05,0.6), loc='upper left') # titre : Répartition de la taille des exploitations en 2010
+plt.title("Répartition du nombre d'exploitations par rapport à leur taille en 2010")
 plt.show()
 
 dfNbExpl2020 = dfCaPB2020.pivot(index="dim", columns="echelle",values="n_exploit")
@@ -215,7 +218,8 @@ for i in range(len(dfNbExpl2020['ca_du_pays_basque'])):
 dfNbExpl2020 = dfNbExpl2020.T
 dfNbExpl2020 = dfNbExpl2020.reindex(columns=['microexploitations','petites','moyennes','grandes'])
 dfNbExpl2020.plot(kind="bar", stacked=True, legend='reverse')
-plt.legend(bbox_to_anchor=(1.05,0.6), loc='upper left') # titre : Répartition de la taille des exploitations en 2020
+plt.legend(title="Pôles",bbox_to_anchor=(1.05,0.6), loc='upper left') # titre : Répartition de la taille des exploitations en 2020
+plt.title("Répartition du nombre d'exploitations par rapport à leur taille en 2020")
 plt.show()
 
 
@@ -232,5 +236,35 @@ for i in range(len(dfNbExpl2020['ca_du_pays_basque'])):
 
 dfNbExpl2020 = dfNbExpl2020.T.reindex(columns=['microexploitations','petites','moyennes','grandes'])
 dfNbExpl2020.plot(kind="bar",title="Taux de variation des SAU entre 2010 & 2020", legend='reverse')
-plt.legend(bbox_to_anchor=(1.05,0.6), loc='upper left')
+plt.legend(title="Pôles",bbox_to_anchor=(1.05,0.6), loc='upper left')
 plt.show()
+
+
+"""
+#Radar
+dimension2020 = dimension2020.T
+regroupementPole = {1:["Iholdi Otzibarre","Soule Xiberoa","Garazi Baigorri"],2:["Pays de Bidache","Amikuze","Pays d'Hasparren"],3:["Sud Pays Basque","Errobi","Cote Basque Adour","Nive Adour"]}
+couleur = ["green","red","blue","orange"]
+for x in regroupementPole:
+    echelle = regroupementPole[x]
+    ind = 0
+    angles = np.linspace(0, 2 * np.pi, 4, endpoint=False).tolist()
+    angles += angles[:1]
+    fig, ax = plt.subplots(figsize=(8, 8), subplot_kw=dict(polar=True))
+    for i in echelle:
+        categories=['microexploitations','petites','moyennes','grandes']
+        pole = list([dimension2020[j][i] for j in categories])
+        label_loc=np.linspace(start=0,stop=2*np.pi,num=len(pole))
+       
+        pole += pole[:1]
+        ax.plot(angles, pole, color=couleur[ind], linewidth=1, label=regroupementPole[x][ind])
+        ax.fill(angles, pole, color=couleur[ind], alpha=0.5)
+        ind += 1
+        
+
+    plt.title("Taux de variation des SAU entre 2010 & 2020")
+    lines, labels = plt.thetagrids(range(0,360,90),labels=categories)
+    plt.legend(title="Pôles",loc='upper right', bbox_to_anchor=(1.25, 1))
+    plt.show()
+"""
+
