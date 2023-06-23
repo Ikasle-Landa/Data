@@ -5,6 +5,7 @@ from flask import Flask
 from numpy import nan
 import contextily as cx
 import matplotlib.pyplot as plt
+import matplotlib.markers as mrk
 import mapclassify
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -190,112 +191,112 @@ infosPôle = {
 
 #Créer les graphes étudiant les cheptels en 2010
 
-testCheptels = pd.read_table("fichier_traite_rga/cheptel-Tableau 1_2.csv", sep=';', index_col=0, na_values=-999)
+donneesCheptels = pd.read_table("fichier_traite_rga/cheptel-Tableau 1_2.csv", sep=';', index_col=0, na_values=-999)
 
-testCheptels = testCheptels.loc[testCheptels.index != 'ca_du_pays_basque', :]
+donneesCheptels = donneesCheptels.loc[donneesCheptels.index != 'ca_du_pays_basque', :]
 
-testCheptels.replace(nan, 0, inplace=True)
+donneesCheptels.replace(nan, 0, inplace=True)
 
 #Transposition du dataframe pour les traitements suivants
-testCheptels = testCheptels.T
+donneesCheptels = donneesCheptels.T
 
 #Conversion des cheptels en pourcentage sur chaque pole
-for i in testCheptels:
-    somme = testCheptels[i].sum()
-    for j in range(len(testCheptels[i])):
-        testCheptels[i][j] = testCheptels[i][j] / somme
+for i in donneesCheptels:
+    somme = donneesCheptels[i].sum()
+    for j in range(len(donneesCheptels[i])):
+        donneesCheptels[i][j] = donneesCheptels[i][j] / somme
 
 #Réordonner les indexs
-index=testCheptels.index
+index=donneesCheptels.index
 nouvelindex=[index[2], index[4], index[6], index[5], index[1], index[0], index[3]]
-testCheptels = testCheptels.reindex(nouvelindex)
+donneesCheptels = donneesCheptels.reindex(nouvelindex)
 
 #Trier les données des colonnes dans l'ordre
-testCheptels = testCheptels.T
-testCheptels = testCheptels.sort_values(by = 'total bovins', ascending=False)
+donneesCheptels = donneesCheptels.T
+donneesCheptels = donneesCheptels.sort_values(by = 'total bovins', ascending=False)
 
 #Renommer les colonnes pour être plus clair
 nouvellesColonnes=['Cheptels bovins', 'Cheptels Ovins', 'Cheptels de Volailles', 'Cheptels Porcins',
                    'Cheptel Equins', 'Apiculture', 'Cheptels Caprins']
-testCheptels.columns = nouvellesColonnes
+donneesCheptels.columns = nouvellesColonnes
 
-testCheptels.plot(kind="bar",stacked=True)
+donneesCheptels.plot(kind="bar",stacked=True)
 plt.legend(title="Nombre de Cheptels", bbox_to_anchor = (1.05, 1.0), loc = 'upper left')
 plt.xlabel("Pôle étudié")
 plt.ylabel("Pourcentage sur le pôle")
 plt.title("Répartition des cheptels selon le pôle étudié en 2010")
 
-index=testCheptels.index
-colonnes = testCheptels.columns 
+index=donneesCheptels.index
+colonnes = donneesCheptels.columns 
 
 ####################################
 # Etiquettes du « Cheptels bovins »
 ####################################
 
-plt.text(0, testCheptels.loc[index[0],colonnes[0]]/2,
- str(round(testCheptels.loc[index[0],colonnes[0]]*100,1))+ '%',
+plt.text(0, donneesCheptels.loc[index[0],colonnes[0]]/2,
+ str(round(donneesCheptels.loc[index[0],colonnes[0]]*100,1))+ '%',
  ha = 'center')
-plt.text(1, testCheptels.loc[index[1],colonnes[0]]/2,
- str(round(testCheptels.loc[index[1],colonnes[0]]*100,1))+ '%',
+plt.text(1, donneesCheptels.loc[index[1],colonnes[0]]/2,
+ str(round(donneesCheptels.loc[index[1],colonnes[0]]*100,1))+ '%',
  ha = 'center')
-plt.text(2, testCheptels.loc[index[2],colonnes[0]]/2,
- str(round(testCheptels.loc[index[2],colonnes[0]]*100,1))+ '%',
+plt.text(2, donneesCheptels.loc[index[2],colonnes[0]]/2,
+ str(round(donneesCheptels.loc[index[2],colonnes[0]]*100,1))+ '%',
  ha = 'center')
-plt.text(3, testCheptels.loc[index[3],colonnes[0]]/2,
- str(round(testCheptels.loc[index[3],colonnes[0]]*100,1))+ '%',
+plt.text(3, donneesCheptels.loc[index[3],colonnes[0]]/2,
+ str(round(donneesCheptels.loc[index[3],colonnes[0]]*100,1))+ '%',
  ha = 'center')
-plt.text(4, testCheptels.loc[index[4],colonnes[0]]/2,
- str(round(testCheptels.loc[index[4],colonnes[0]]*100,1))+ '%',
+plt.text(4, donneesCheptels.loc[index[4],colonnes[0]]/2,
+ str(round(donneesCheptels.loc[index[4],colonnes[0]]*100,1))+ '%',
  ha = 'center')
-plt.text(5, testCheptels.loc[index[5],colonnes[0]]/2,
- str(round(testCheptels.loc[index[5],colonnes[0]]*100,1))+ '%',
+plt.text(5, donneesCheptels.loc[index[5],colonnes[0]]/2,
+ str(round(donneesCheptels.loc[index[5],colonnes[0]]*100,1))+ '%',
  ha = 'center')
-plt.text(6, testCheptels.loc[index[6],colonnes[0]]/2,
- str(round(testCheptels.loc[index[6],colonnes[0]]*100,1))+ '%',
+plt.text(6, donneesCheptels.loc[index[6],colonnes[0]]/2,
+ str(round(donneesCheptels.loc[index[6],colonnes[0]]*100,1))+ '%',
  ha = 'center')
-plt.text(7, testCheptels.loc[index[7],colonnes[0]]/2,
- str(round(testCheptels.loc[index[7],colonnes[0]]*100,1))+ '%',
+plt.text(7, donneesCheptels.loc[index[7],colonnes[0]]/2,
+ str(round(donneesCheptels.loc[index[7],colonnes[0]]*100,1))+ '%',
  ha = 'center')
-plt.text(8, testCheptels.loc[index[8],colonnes[0]]/2,
- str(round(testCheptels.loc[index[8],colonnes[0]]*100,1))+ '%',
+plt.text(8, donneesCheptels.loc[index[8],colonnes[0]]/2,
+ str(round(donneesCheptels.loc[index[8],colonnes[0]]*100,1))+ '%',
  ha = 'center')
-plt.text(9, testCheptels.loc[index[9],colonnes[0]]/2,
- str(round(testCheptels.loc[index[9],colonnes[0]]*100,1))+ '%',
+plt.text(9, donneesCheptels.loc[index[9],colonnes[0]]/2,
+ str(round(donneesCheptels.loc[index[9],colonnes[0]]*100,1))+ '%',
  ha = 'center')
 
 ####################################
 # Etiquettes du « Cheptels Ovins »
 ####################################
 
-plt.text(0, testCheptels.loc[index[0],colonnes[0]] + testCheptels.loc[index[0],colonnes[1]]/2,
- str(round(testCheptels.loc[index[0],colonnes[1]]*100,1))+ '%',
+plt.text(0, donneesCheptels.loc[index[0],colonnes[0]] + donneesCheptels.loc[index[0],colonnes[1]]/2,
+ str(round(donneesCheptels.loc[index[0],colonnes[1]]*100,1))+ '%',
  ha = 'center')
-plt.text(1, testCheptels.loc[index[1],colonnes[0]] + testCheptels.loc[index[1],colonnes[1]]/2,
- str(round(testCheptels.loc[index[1],colonnes[1]]*100,1))+ '%',
+plt.text(1, donneesCheptels.loc[index[1],colonnes[0]] + donneesCheptels.loc[index[1],colonnes[1]]/2,
+ str(round(donneesCheptels.loc[index[1],colonnes[1]]*100,1))+ '%',
  ha = 'center')
-plt.text(2, testCheptels.loc[index[2],colonnes[0]] + testCheptels.loc[index[2],colonnes[1]]/2,
- str(round(testCheptels.loc[index[2],colonnes[1]]*100,1))+ '%',
+plt.text(2, donneesCheptels.loc[index[2],colonnes[0]] + donneesCheptels.loc[index[2],colonnes[1]]/2,
+ str(round(donneesCheptels.loc[index[2],colonnes[1]]*100,1))+ '%',
  ha = 'center')
-plt.text(3, testCheptels.loc[index[3],colonnes[0]] + testCheptels.loc[index[3],colonnes[1]]/2,
- str(round(testCheptels.loc[index[3],colonnes[1]]*100,1))+ '%',
+plt.text(3, donneesCheptels.loc[index[3],colonnes[0]] + donneesCheptels.loc[index[3],colonnes[1]]/2,
+ str(round(donneesCheptels.loc[index[3],colonnes[1]]*100,1))+ '%',
  ha = 'center')
-plt.text(4, testCheptels.loc[index[4],colonnes[0]] + testCheptels.loc[index[4],colonnes[1]]/2,
- str(round(testCheptels.loc[index[4],colonnes[1]]*100,1))+ '%',
+plt.text(4, donneesCheptels.loc[index[4],colonnes[0]] + donneesCheptels.loc[index[4],colonnes[1]]/2,
+ str(round(donneesCheptels.loc[index[4],colonnes[1]]*100,1))+ '%',
  ha = 'center')
-plt.text(5, testCheptels.loc[index[5],colonnes[0]] + testCheptels.loc[index[5],colonnes[1]]/2,
- str(round(testCheptels.loc[index[5],colonnes[1]]*100,1))+ '%',
+plt.text(5, donneesCheptels.loc[index[5],colonnes[0]] + donneesCheptels.loc[index[5],colonnes[1]]/2,
+ str(round(donneesCheptels.loc[index[5],colonnes[1]]*100,1))+ '%',
  ha = 'center')
-plt.text(6, testCheptels.loc[index[6],colonnes[0]] + testCheptels.loc[index[6],colonnes[1]]/2,
- str(round(testCheptels.loc[index[6],colonnes[1]]*100,1))+ '%',
+plt.text(6, donneesCheptels.loc[index[6],colonnes[0]] + donneesCheptels.loc[index[6],colonnes[1]]/2,
+ str(round(donneesCheptels.loc[index[6],colonnes[1]]*100,1))+ '%',
  ha = 'center')
-plt.text(7, testCheptels.loc[index[7],colonnes[0]] + testCheptels.loc[index[7],colonnes[1]]/2,
- str(round(testCheptels.loc[index[7],colonnes[1]]*100,1))+ '%',
+plt.text(7, donneesCheptels.loc[index[7],colonnes[0]] + donneesCheptels.loc[index[7],colonnes[1]]/2,
+ str(round(donneesCheptels.loc[index[7],colonnes[1]]*100,1))+ '%',
  ha = 'center')
-plt.text(8, testCheptels.loc[index[8],colonnes[0]] + testCheptels.loc[index[8],colonnes[1]]/2,
- str(round(testCheptels.loc[index[8],colonnes[1]]*100,1))+ '%',
+plt.text(8, donneesCheptels.loc[index[8],colonnes[0]] + donneesCheptels.loc[index[8],colonnes[1]]/2,
+ str(round(donneesCheptels.loc[index[8],colonnes[1]]*100,1))+ '%',
  ha = 'center')
-plt.text(9, testCheptels.loc[index[9],colonnes[0]] + testCheptels.loc[index[9],colonnes[1]]/2,
- str(round(testCheptels.loc[index[9],colonnes[1]]*100,1))+ '%',
+plt.text(9, donneesCheptels.loc[index[9],colonnes[0]] + donneesCheptels.loc[index[9],colonnes[1]]/2,
+ str(round(donneesCheptels.loc[index[9],colonnes[1]]*100,1))+ '%',
  ha = 'center')
 
 plt.show()
@@ -304,112 +305,245 @@ plt.show()
 #Créer les graphes étudiant les cheptels en 2020
 ################################################
 
-testCheptels = pd.read_table("fichier_traite_rga/cheptel-Tableau 1_3.csv", sep=';', index_col=0, na_values=-999)
+donneesCheptels = pd.read_table("fichier_traite_rga/cheptel-Tableau 1_3.csv", sep=';', index_col=0, na_values=-999)
 
-testCheptels = testCheptels.loc[testCheptels.index != 'ca_du_pays_basque', :]
+donneesCheptels = donneesCheptels.loc[donneesCheptels.index != 'ca_du_pays_basque', :]
 
-testCheptels.replace(nan, 0, inplace=True)
+donneesCheptels.replace(nan, 0, inplace=True)
 
 #Transposition du dataframe pour les traitements suivants
-testCheptels = testCheptels.T
+donneesCheptels = donneesCheptels.T
 
 #Conversion des cheptels en pourcentage sur chaque pole
-for i in testCheptels:
-    somme = testCheptels[i].sum()
-    for j in range(len(testCheptels[i])):
-        testCheptels[i][j] = testCheptels[i][j] / somme
+for i in donneesCheptels:
+    somme = donneesCheptels[i].sum()
+    for j in range(len(donneesCheptels[i])):
+        donneesCheptels[i][j] = donneesCheptels[i][j] / somme
 
 #Réordonner les indexs
-index=testCheptels.index
-nouvelindex=[index[2], index[4], index[6], index[5], index[1], index[0], index[3]]
-testCheptels = testCheptels.reindex(nouvelindex)
+index=donneesCheptels.index
+nouvelindex=[index[2], index[4], index[6], index[1], index[5], index[0], index[3]]
+donneesCheptels = donneesCheptels.reindex(nouvelindex)
 
 #Trier les données des colonnes dans l'ordre
-testCheptels = testCheptels.T
-testCheptels = testCheptels.sort_values(by = 'total bovins', ascending=False)
+donneesCheptels = donneesCheptels.T
+donneesCheptels = donneesCheptels.sort_values(by = 'total bovins', ascending=False)
 
 #Renommer les colonnes pour être plus clair
 nouvellesColonnes=['Cheptels bovins', 'Cheptels Ovins', 'Cheptels de Volailles', 'Cheptels Porcins',
-                   'Cheptel Equins', 'Apiculture', 'Cheptels Caprins']
-testCheptels.columns = nouvellesColonnes
+                   'Cheptels Equins', 'Apiculture', 'Cheptels Caprins']
+donneesCheptels.columns = nouvellesColonnes
 
-testCheptels.plot(kind="bar",stacked=True)
+donneesCheptels.plot(kind="bar",stacked=True)
 plt.legend(title="Nombre de Cheptels", bbox_to_anchor = (1.05, 1.0), loc = 'upper left')
 plt.xlabel("Pôle étudié")
 plt.ylabel("Pourcentage sur le pôle")
 plt.title("Répartition des cheptels selon le pôle étudié en 2020")
 
-index=testCheptels.index
-colonnes = testCheptels.columns 
+index=donneesCheptels.index
+colonnes = donneesCheptels.columns 
 
 ####################################
 # Etiquettes du « total bovins »
 ####################################
 
-plt.text(0, testCheptels.loc[index[0],colonnes[0]]/2,
- str(round(testCheptels.loc[index[0],colonnes[0]]*100,1))+ '%',
+plt.text(0, donneesCheptels.loc[index[0],colonnes[0]]/2,
+ str(round(donneesCheptels.loc[index[0],colonnes[0]]*100,1))+ '%',
  ha = 'center')
-plt.text(1, testCheptels.loc[index[1],colonnes[0]]/2,
- str(round(testCheptels.loc[index[1],colonnes[0]]*100,1))+ '%',
+plt.text(1, donneesCheptels.loc[index[1],colonnes[0]]/2,
+ str(round(donneesCheptels.loc[index[1],colonnes[0]]*100,1))+ '%',
  ha = 'center')
-plt.text(2, testCheptels.loc[index[2],colonnes[0]]/2,
- str(round(testCheptels.loc[index[2],colonnes[0]]*100,1))+ '%',
+plt.text(2, donneesCheptels.loc[index[2],colonnes[0]]/2,
+ str(round(donneesCheptels.loc[index[2],colonnes[0]]*100,1))+ '%',
  ha = 'center')
-plt.text(3, testCheptels.loc[index[3],colonnes[0]]/2,
- str(round(testCheptels.loc[index[3],colonnes[0]]*100,1))+ '%',
+plt.text(3, donneesCheptels.loc[index[3],colonnes[0]]/2,
+ str(round(donneesCheptels.loc[index[3],colonnes[0]]*100,1))+ '%',
  ha = 'center')
-plt.text(4, testCheptels.loc[index[4],colonnes[0]]/2,
- str(round(testCheptels.loc[index[4],colonnes[0]]*100,1))+ '%',
+plt.text(4, donneesCheptels.loc[index[4],colonnes[0]]/2,
+ str(round(donneesCheptels.loc[index[4],colonnes[0]]*100,1))+ '%',
  ha = 'center')
-plt.text(5, testCheptels.loc[index[5],colonnes[0]]/2,
- str(round(testCheptels.loc[index[5],colonnes[0]]*100,1))+ '%',
+plt.text(5, donneesCheptels.loc[index[5],colonnes[0]]/2,
+ str(round(donneesCheptels.loc[index[5],colonnes[0]]*100,1))+ '%',
  ha = 'center')
-plt.text(6, testCheptels.loc[index[6],colonnes[0]]/2,
- str(round(testCheptels.loc[index[6],colonnes[0]]*100,1))+ '%',
+plt.text(6, donneesCheptels.loc[index[6],colonnes[0]]/2,
+ str(round(donneesCheptels.loc[index[6],colonnes[0]]*100,1))+ '%',
  ha = 'center')
-plt.text(7, testCheptels.loc[index[7],colonnes[0]]/2,
- str(round(testCheptels.loc[index[7],colonnes[0]]*100,1))+ '%',
+plt.text(7, donneesCheptels.loc[index[7],colonnes[0]]/2,
+ str(round(donneesCheptels.loc[index[7],colonnes[0]]*100,1))+ '%',
  ha = 'center')
-plt.text(8, testCheptels.loc[index[8],colonnes[0]]/2,
- str(round(testCheptels.loc[index[8],colonnes[0]]*100,1))+ '%',
+plt.text(8, donneesCheptels.loc[index[8],colonnes[0]]/2,
+ str(round(donneesCheptels.loc[index[8],colonnes[0]]*100,1))+ '%',
  ha = 'center')
-plt.text(9, testCheptels.loc[index[9],colonnes[0]]/2,
- str(round(testCheptels.loc[index[9],colonnes[0]]*100,1))+ '%',
+plt.text(9, donneesCheptels.loc[index[9],colonnes[0]]/2,
+ str(round(donneesCheptels.loc[index[9],colonnes[0]]*100,1))+ '%',
  ha = 'center')
 
 ####################################
 # Etiquettes du « Cheptels Ovins »
 ####################################
 
-plt.text(0, testCheptels.loc[index[0],colonnes[0]] + testCheptels.loc[index[0],colonnes[1]]/2,
- str(round(testCheptels.loc[index[0],colonnes[1]]*100,1))+ '%',
+plt.text(0, donneesCheptels.loc[index[0],colonnes[0]] + donneesCheptels.loc[index[0],colonnes[1]]/2,
+ str(round(donneesCheptels.loc[index[0],colonnes[1]]*100,1))+ '%',
  ha = 'center')
-plt.text(1, testCheptels.loc[index[1],colonnes[0]] + testCheptels.loc[index[1],colonnes[1]]/2,
- str(round(testCheptels.loc[index[1],colonnes[1]]*100,1))+ '%',
+plt.text(1, donneesCheptels.loc[index[1],colonnes[0]] + donneesCheptels.loc[index[1],colonnes[1]]/2,
+ str(round(donneesCheptels.loc[index[1],colonnes[1]]*100,1))+ '%',
  ha = 'center')
-plt.text(2, testCheptels.loc[index[2],colonnes[0]] + testCheptels.loc[index[2],colonnes[1]]/2,
- str(round(testCheptels.loc[index[2],colonnes[1]]*100,1))+ '%',
+plt.text(2, donneesCheptels.loc[index[2],colonnes[0]] + donneesCheptels.loc[index[2],colonnes[1]]/2,
+ str(round(donneesCheptels.loc[index[2],colonnes[1]]*100,1))+ '%',
  ha = 'center')
-plt.text(3, testCheptels.loc[index[3],colonnes[0]] + testCheptels.loc[index[3],colonnes[1]]/2,
- str(round(testCheptels.loc[index[3],colonnes[1]]*100,1))+ '%',
+plt.text(3, donneesCheptels.loc[index[3],colonnes[0]] + donneesCheptels.loc[index[3],colonnes[1]]/2,
+ str(round(donneesCheptels.loc[index[3],colonnes[1]]*100,1))+ '%',
  ha = 'center')
-plt.text(4, testCheptels.loc[index[4],colonnes[0]] + testCheptels.loc[index[4],colonnes[1]]/2,
- str(round(testCheptels.loc[index[4],colonnes[1]]*100,1))+ '%',
+plt.text(4, donneesCheptels.loc[index[4],colonnes[0]] + donneesCheptels.loc[index[4],colonnes[1]]/2,
+ str(round(donneesCheptels.loc[index[4],colonnes[1]]*100,1))+ '%',
  ha = 'center')
-plt.text(5, testCheptels.loc[index[5],colonnes[0]] + testCheptels.loc[index[5],colonnes[1]]/2,
- str(round(testCheptels.loc[index[5],colonnes[1]]*100,1))+ '%',
+plt.text(5, donneesCheptels.loc[index[5],colonnes[0]] + donneesCheptels.loc[index[5],colonnes[1]]/2,
+ str(round(donneesCheptels.loc[index[5],colonnes[1]]*100,1))+ '%',
  ha = 'center')
-plt.text(6, testCheptels.loc[index[6],colonnes[0]] + testCheptels.loc[index[6],colonnes[1]]/2,
- str(round(testCheptels.loc[index[6],colonnes[1]]*100,1))+ '%',
+plt.text(6, donneesCheptels.loc[index[6],colonnes[0]] + donneesCheptels.loc[index[6],colonnes[1]]/2,
+ str(round(donneesCheptels.loc[index[6],colonnes[1]]*100,1))+ '%',
  ha = 'center')
-plt.text(7, testCheptels.loc[index[7],colonnes[0]] + testCheptels.loc[index[7],colonnes[1]]/2,
- str(round(testCheptels.loc[index[7],colonnes[1]]*100,1))+ '%',
+plt.text(7, donneesCheptels.loc[index[7],colonnes[0]] + donneesCheptels.loc[index[7],colonnes[1]]/2,
+ str(round(donneesCheptels.loc[index[7],colonnes[1]]*100,1))+ '%',
  ha = 'center')
-plt.text(8, testCheptels.loc[index[8],colonnes[0]] + testCheptels.loc[index[8],colonnes[1]]/2,
- str(round(testCheptels.loc[index[8],colonnes[1]]*100,1))+ '%',
+plt.text(8, donneesCheptels.loc[index[8],colonnes[0]] + donneesCheptels.loc[index[8],colonnes[1]]/2,
+ str(round(donneesCheptels.loc[index[8],colonnes[1]]*100,1))+ '%',
  ha = 'center')
-plt.text(9, testCheptels.loc[index[9],colonnes[0]] + testCheptels.loc[index[9],colonnes[1]]/2,
- str(round(testCheptels.loc[index[9],colonnes[1]]*100,1))+ '%',
+plt.text(9, donneesCheptels.loc[index[9],colonnes[0]] + donneesCheptels.loc[index[9],colonnes[1]]/2,
+ str(round(donneesCheptels.loc[index[9],colonnes[1]]*100,1))+ '%',
  ha = 'center')
 
 plt.show()
+
+'''
+################################################
+#Créer graphe radar pour tester
+################################################
+
+for i in range(len(donneesCheptels)):
+    #Pour 2010
+    donneesCheptels = pd.read_table("fichier_traite_rga/cheptel-Tableau 1_2.csv", sep=';', index_col=0, na_values=-999)
+
+    donneesCheptels = donneesCheptels.loc[donneesCheptels.index != 'ca_du_pays_basque', :]
+
+    donneesCheptels.replace(nan, 0, inplace=True)
+
+    #Conversion des cheptels en pourcentage sur chaque pole
+    for x in donneesCheptels:
+        somme = donneesCheptels[x].sum()
+        for y in range(len(donneesCheptels[x])):
+            donneesCheptels[x][y] = donneesCheptels[x][y] / somme
+
+    categories=list(donneesCheptels.columns)
+    pole1 = list(donneesCheptels.iloc[i, :])
+    pole1.append(pole1[0])
+    label_loc=np.linspace(start=0,stop=2*np.pi,num=len(pole1))
+
+    rad=np.arange(12.)*np.pi/6
+    r=np.degrees(rad)
+    plt.figure(figsize=(8,8))
+    plt.subplot(polar=True)
+    plt.plot(label_loc, pole1, label=donneesCheptels.index[i], color='blue')
+    lines, labels = plt.thetagrids(range(0,360,52),labels=categories)
+
+    #Pour 2020
+    donneesCheptels = pd.read_table("fichier_traite_rga/cheptel-Tableau 1_3.csv", sep=';', index_col=0, na_values=-999)
+
+    donneesCheptels = donneesCheptels.loc[donneesCheptels.index != 'ca_du_pays_basque', :]
+
+    donneesCheptels.replace(nan, 0, inplace=True)
+
+    #Conversion des cheptels en pourcentage sur chaque pole
+    for x in donneesCheptels:
+        somme = donneesCheptels[x].sum()
+        for y in range(len(donneesCheptels[x])):
+            donneesCheptels[x][y] = donneesCheptels[x][y] / somme
+
+    categories=list(donneesCheptels.columns)
+    pole1 = list(donneesCheptels.iloc[i, :])
+    pole1.append(pole1[0])
+    label_loc=np.linspace(start=0,stop=2*np.pi,num=len(pole1))
+
+    titre = 'Répartition des cheptels sur le pole de ' + str(donneesCheptels.index[i]) + ' en 2010 et 2020'
+    plt.plot(label_loc, pole1, label=donneesCheptels.index[i], color='red')
+    plt.title(titre)
+    plt.legend(('2020', '2010'))
+    plt.show()
+
+'''
+#################################
+"""
+Bubble plot ca_du_pays_basque -------------------------------------
+"""
+#################################
+'''
+
+ls=[200,200,200,200,200,200,200,200]
+pole=[1500,2108,771,76,1263,1628,1796,90]
+ann=[14782.49,66239.88,38904.91,4470.63,14951.55,55015.5,44160.89,5424.04]
+color=["#A93F3F","#3F4AA9","#3FA945","#813FA9",
+    "#A93F3F","#3F4AA9","#3FA945","#813FA9"]
+colTest=np.arange(10)
+
+#2010
+for n in range(len(pole)//2) :
+    a = plt.scatter(pole[n],ann[n],s=ls[n],c=color[n], alpha=0.5)
+
+#2020
+for n in range(len(pole)//2, len(pole)) :
+    b = plt.scatter(pole[n],ann[n],s=ls[n],c=color[n], alpha=0.6)
+
+
+plt.xlabel("Nombre exploitation")
+plt.ylabel("Surface exploitation")
+plt.legend((a, b), ('2010', '2020'), title="Année concernée", bbox_to_anchor = (1.05, 1.0), loc = 'upper left')
+plt.grid(which='both')
+plt.show()
+
+'''
+#################################
+#               Test            #
+#           Diagramme type      #
+#               radar           #
+#################################
+
+'''
+
+# Libraries
+from math import pi
+
+# number of variable
+categories=list(donneesCheptels.T)[1:]
+N = len(categories)
+
+# We are going to plot the first line of the data frame.
+# But we need to repeat the first value to close the circular graph:
+values=donneesCheptels.T.loc[0].drop('Étiquettes de lignes').values.flatten().tolist()
+values += values[:1]
+values
+
+# What will be the angle of each axis in the plot? (we divide the plot / number of variable)
+angles = [n / float(N) * 2 * pi for n in range(N)]
+angles += angles[:1]
+
+# Initialise the spider plot
+ax = plt.subplot(111, polar=True)
+
+# Draw one axe per variable + add labels
+plt.xticks(angles[:-1], categories, color='grey', size=8)
+
+# Draw ylabels
+ax.set_rlabel_position(0)
+plt.yticks([10,20,30], ["10","20","30"], color="grey", size=7)
+plt.ylim(0,40)
+
+# Plot data
+ax.plot(angles, values, linewidth=1, linestyle='solid')
+
+# Fill area
+ax.fill(angles, values, 'b', alpha=0.1)
+
+# Show the graph
+plt.show() 
+
+'''
