@@ -299,6 +299,10 @@ plt.text(9, donneesCheptels.loc[index[9],colonnes[0]] + donneesCheptels.loc[inde
  str(round(donneesCheptels.loc[index[9],colonnes[1]]*100,1))+ '%',
  ha = 'center')
 
+nomFormat = 'svg'
+nom = 'barreEmpileesCheptels2010.svg'
+plt.savefig(nom, format=nomFormat, bbox_inches="tight")
+
 plt.show()
 
 ################################################
@@ -420,8 +424,6 @@ plt.savefig(nom, format=nomFormat, bbox_inches="tight")
 #Affichage graphique
 plt.show()
 
-
-'''
 ################################################
 #Créer graphe radar pour tester
 ################################################
@@ -476,7 +478,11 @@ for i in range(len(donneesCheptels)):
     plt.legend(('2020', '2010'))
     plt.show()
 
-'''
+    titre = titre + ".svg"
+    nomFormat = 'svg'
+    nom = 'barreEmpileesCheptels2010.svg'
+    plt.savefig(titre, format=nomFormat, bbox_inches="tight")
+
 #################################
 """
 Bubble plot ca_du_pays_basque -------------------------------------
