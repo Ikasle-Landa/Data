@@ -413,7 +413,13 @@ plt.text(9, donneesCheptels.loc[index[9],colonnes[0]] + donneesCheptels.loc[inde
  str(round(donneesCheptels.loc[index[9],colonnes[1]]*100,1))+ '%',
  ha = 'center')
 
+nomFormat = 'svg'
+nom = 'barreEmpileesCheptels2020.svg'
+plt.savefig(nom, format=nomFormat, bbox_inches="tight")
+
+#Affichage graphique
 plt.show()
+
 
 '''
 ################################################
