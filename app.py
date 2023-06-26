@@ -36,30 +36,36 @@ geoDonneesDevenirExploitation = geoDonnees.merge(mainDf, on="echelle")
 geoDonneesMainDf = geoDonneesPole.merge(mainDf, on="echelle")
 
 
-devenirExploitation = {1:"pas de départ du chef ou coexploitant envisagé dans l'immédiat",
-                       2:"disparition des terres au profit d'un usage non agricole",
-                       3:"nombre d'exploitations non concernées",
-                       4:"reprise par un coexploitant, un membre de la famille ou un tiers",
-                       5:"ne sait pas",
-                       6:"total d'exploitations concernées",
-                       7:"disparition au profit de l'agrandissement d'une ou plusieurs autres exploitations"}
+# devenirExploitation = {1:"pas de départ du chef ou coexploitant envisagé dans l'immédiat",
+#                        2:"disparition des terres au profit d'un usage non agricole",
+#                        3:"nombre d'exploitations non concernées",
+#                        4:"reprise par un coexploitant, un membre de la famille ou un tiers",
+#                        5:"ne sait pas",
+#                        6:"total d'exploitations concernées",
+#                        7:"disparition au profit de l'agrandissement d'une ou plusieurs autres exploitations"}
 
+
+
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#                            Backend du                         #
+#                             serveur                           #
+#                               web                             #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 app = Flask(__name__)
 
-@app.route("/")
+@app.route("/") # Page D'accueil
 def Accueil():
     m = folium.Map(location=[43.3758766,-1.2983944], # center of the folium map
                 tiles="cartodbdark_matter",
-                min_zoom=10, max_zoom=10, # zoom range
+                min_zoom=10, max_zoom=10, # zoom range = donc pas de zoom possible
                 zoom_start=10,
-                min_lon=43.3758766, max_lon=-1.2983944,
-                min_lat=43.3758766, max_lat=1.2983944) # initial zoom
+                min_lon=43.3758766, max_lon=-1.2983944, 
+                min_lat=43.3758766, max_lat=1.2983944)
 
 
     folium.Choropleth(geo_data=geoDonneesMainDf,
-                    # data=geoDonneesMainDf,
-                    # columns=["echelle", "pas de départ du chef ou coexploitant envisagé dans l'immédiat"],
                     key_on="feature.properties.echelle",
                     nan_fill_color="white",
                     fill_color="#f1f1f1",
