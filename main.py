@@ -33,13 +33,9 @@ geoDonneesAge = geoDonnees.merge(ageParPole, on='echelle')
 
 mainDf = pd.read_table("Data/devenir_exploitation.csv", sep=";",decimal=",")
 
-mainDf2010 = mainDf.loc[mainDf['annee'] == 2010, :] 
-mainDf2020 = mainDf.loc[mainDf['annee'] == 2020, :] 
-
 geoDonneesDevenirExploitation = geoDonnees.merge(mainDf, on="echelle")
 
-geoDonneesMainDf2010 = geoDonneesPole.merge(mainDf2010, on="echelle")
-geoDonneesMainDf2020 = geoDonneesPole.merge(mainDf2020, on="echelle")
+geoDonneesMainDf = geoDonneesPole.merge(mainDf, on="echelle")
 
 """
 ax = geoDonneesDevenirExploitation.plot(column="pas de départ du chef ou coexploitant envisagé dans l'immédiat",
@@ -135,7 +131,8 @@ mainDf.replace(-999,nan, inplace=True)
 
 #echelles = mainDf["echelle"].drop_duplicates()
 
-
+mainDf2010 = mainDf.loc[mainDf['annee'] == 2010, :] 
+mainDf2020 = mainDf.loc[mainDf['annee'] == 2020, :] 
 """
 dimension2010 = mainDf2010.pivot(index="dim", columns="echelle",values="n_exploit")
 
@@ -277,18 +274,29 @@ for x in regroupementPole:
     plt.show()
 
 """
+dfVariation = pd.read_table('Data/variation1970-2020.csv', sep=';')
+l = ['echelle','variation']
+dfVariation.columns = l
+
+gdfVariation = geoDonneesPole.merge(dfVariation, on='echelle')
+#variation_decennale
+
+
+
 m = folium.Map(location=[43.3758766,-1.2983944], # center of the folium map
-                tiles="OpenStreetMap",
+                tiles = "OpenStreetMap",
                 min_zoom=6, max_zoom=15, # zoom range
                 zoom_start=9) # initial zoom
 
 
-folium.Choropleth(geo_data=geoDonneesMainDf,
-                data=geoDonneesMainDf,
-                columns=["echelle",'n_exploit'],
+folium.Choropleth(geo_data=gdfVariation,
+                data=gdfVariation,
+                columns=["echelle",'variation'],
                 key_on="feature.properties.echelle",
-                fill_color="YlGn",
-                fill_opacity=0.85,
+                fill_color='RdYlGn',
+                bins = [-0.83,-0.65,-0.50,-0.40,-0.25,0,0.05,0.1,0.19,0.3],
+                legend_name="Taux de variation du nombre d'exploitation entre 1970 & 2020",
+                fill_opacity=0.95,
                 smooth_factor=0,
                 Highlight= True,
                 line_color = "#0000",
@@ -300,19 +308,20 @@ style_function = lambda x: {'fillColor': '#ffffff',
                             'color':'#000000', 
                             'fillOpacity': 0.1, 
                             'weight': 0.1}
+
 highlight_function = lambda x: {'fillColor': '#000000', 
                                 'color':'#000000', 
                                 'fillOpacity': 0.50, 
                                 'weight': 0.1}
 
 IHM = folium.features.GeoJson(
-    data = geoDonneesMainDf,
+    data = gdfVariation,
     style_function=style_function, 
     control=False,
     highlight_function=highlight_function, 
     tooltip=folium.features.GeoJsonTooltip(
-        fields=['echelle','n_exploit'],
-        aliases=['echelle','Nombre d\'exploitations :'],
+        fields=['echelle','variation'],
+        aliases=['echelle','Taux de variation :'],
         style=("background-color: white; color: #222222; font-family: arial; font-size: 12px; padding: 10px;") 
     )
 )
@@ -327,4 +336,4 @@ folium.TileLayer("Stamen Terrain",name="relief",control=True).add_to(m)
 folium.LayerControl(collapsed=False).add_to(m)
 
 
-m
+m.save("CarteVariation1970-2020.html")
