@@ -157,7 +157,7 @@ for i in range(len(nbExploitFrance)):
 ls=pd.Series(varDecennale)
 dfToChrono['variation_decennale']=ls.values
 ls=pd.Series(varSur1an)
-dfToChrono['variation_sur_1_an']=ls.values
+dfToChrono['variation_1970-2020']=ls.values
 ls=pd.Series(varEntre2010et2020)
 dfToChrono['variation_entre_2010_2020']=ls.values
 
@@ -270,3 +270,7 @@ Représentation évolution Otex ------------------------------------------------
 #     for index,row in otexPoles[key].iterrows():
 #         if row[0] == 2010:
 #             col.append(row[2])
+
+
+test=[-30,-12,-5,-2,1,2,12,8]
+pole=list(dfToChrono.index)
