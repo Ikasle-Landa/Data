@@ -22,18 +22,24 @@ geoDonneesPole = gpd.read_file("contour_capb_poles_territoriaux.geojson")
 geoDonnees = geoDonnees.loc[geoDonnees['echelle'] != 'ca_du_pays_basque', :]
 #ax = geoDonnees.plot(column="echelle", cmap="summer", legend=True, legend_kwds={"loc": "center left", "bbox_to_anchor": (1, 0.5), "fmt": "{:.0f}"})
 #ctx.add_basemap(ax, crs = geoDonnees.crs)
+ 
+chiffreCle =  pd.read_table("Data/chiffres_cles_des_poles.csv", sep=';',decimal=',')
+dfNbExpl = chiffreCle.loc[chiffreCle['nom'] == 'nombre total d\'exploitations',:]
+dfNbExpl = dfNbExpl.drop(columns =['type'])
 
-chiffresCles =  pd.read_table("Data/chiffres_cles_des_poles.csv", sep=';')
-
-ageParPole = chiffresCles.loc[chiffresCles["type"] == "age_moy", :]
+ageParPole = chiffreCle.loc[chiffreCle["type"] == "age_moy", :]
 
 geoDonneesAge = geoDonnees.merge(ageParPole, on='echelle')
 
 mainDf = pd.read_table("Data/devenir_exploitation.csv", sep=";",decimal=",")
 
+mainDf2010 = mainDf.loc[mainDf['annee'] == 2010, :] 
+mainDf2020 = mainDf.loc[mainDf['annee'] == 2020, :] 
+
 geoDonneesDevenirExploitation = geoDonnees.merge(mainDf, on="echelle")
 
-geoDonneesMainDf = geoDonneesPole.merge(mainDf, on="echelle")
+geoDonneesMainDf2010 = geoDonneesPole.merge(mainDf2010, on="echelle")
+geoDonneesMainDf2020 = geoDonneesPole.merge(mainDf2020, on="echelle")
 
 """
 ax = geoDonneesDevenirExploitation.plot(column="pas de départ du chef ou coexploitant envisagé dans l'immédiat",
@@ -54,8 +60,8 @@ ax = geoDonneesAge.plot(column="2020",cmap="summer", legend=True, legend_kwds={"
 ax.set_axis_off()
 ctx.add_basemap(ax, crs = geoDonneesAge.crs)
 
-
-
+"""
+"""
 devenirExploitation = {1:"pas de départ du chef ou coexploitant envisagé dans l'immédiat",
                        2:"disparition des terres au profit d'un usage non agricole",
                        3:"nombre d'exploitations non concernées",
@@ -67,7 +73,7 @@ devenirExploitation = {1:"pas de départ du chef ou coexploitant envisagé dans 
 
 for i in devenirExploitation:
     m = folium.Map(location=[43.3758766,-1.2983944], # center of the folium map
-                    tiles="OpenStreetMap",
+                    tiles="Mapbox Bright",
                     min_zoom=6, max_zoom=15, # zoom range
                     zoom_start=9) # initial zoom
 
@@ -109,7 +115,7 @@ for i in devenirExploitation:
     m.keep_in_front(IHM)
 
     # Ajout de de mode de carte 
-    folium.TileLayer('cartodbdark_matter',name="dark mode",control=True).add_to(m)
+    folium.TileLayer('cartodbpositron',name="clair",control=True).add_to(m)
     folium.TileLayer("Stamen Terrain",name="relief",control=True).add_to(m)
 
     # Ajout d'une interface de contrôle
@@ -119,7 +125,6 @@ for i in devenirExploitation:
     filename = 'carte' + str(i) + '.html'
     m.save(filename)
 """
-
 dfTemp = pd.read_table('Data/dimensions_exploitation.csv' ,sep=";",decimal=",")
 
 mainDf = mainDf.merge(dfTemp,how='right',right_on="echelle",left_on="echelle")
@@ -128,11 +133,10 @@ mainDf.replace(-999,nan, inplace=True)
 
 
 
-echelles = mainDf["echelle"].drop_duplicates()
+#echelles = mainDf["echelle"].drop_duplicates()
 
-mainDf2010 = mainDf.loc[mainDf['annee'] == 2010, :] 
-mainDf2020 = mainDf.loc[mainDf['annee'] == 2020, :] 
 
+"""
 dimension2010 = mainDf2010.pivot(index="dim", columns="echelle",values="n_exploit")
 
 
@@ -182,7 +186,8 @@ for i in dimension2020 :
     for j in range(len(dimension2020[i])):
         val2010 = dimension2010[i][j]
         dimension2020[i][j] = (dimension2020[i][j] - val2010) / val2010 
-
+"""
+"""
 dimension2020 = dimension2020.T.reindex(columns=['microexploitations','petites','moyennes','grandes'])
 dimension2020.plot(kind="bar",title="Taux de variation des SAU entre 2010 & 2020", legend='reverse')
 plt.legend(bbox_to_anchor=(1.05,0.6), loc='upper left')
@@ -237,7 +242,10 @@ for i in range(len(dfNbExpl2020['ca_du_pays_basque'])):
 dfNbExpl2020 = dfNbExpl2020.T.reindex(columns=['microexploitations','petites','moyennes','grandes'])
 dfNbExpl2020.plot(kind="bar",title="Taux de variation des SAU entre 2010 & 2020", legend='reverse')
 plt.legend(title="Pôles",bbox_to_anchor=(1.05,0.6), loc='upper left')
+plt.savefig('Graphique.svg',bbox_inches='tight',format='svg')
 plt.show()
+
+"""
 
 
 """
@@ -265,6 +273,58 @@ for x in regroupementPole:
     plt.title("Taux de variation des SAU entre 2010 & 2020")
     lines, labels = plt.thetagrids(range(0,360,90),labels=categories)
     plt.legend(title="Pôles",loc='upper right', bbox_to_anchor=(1.25, 1))
+    fig.savefig('./Graphiques/Radar_SAU_2010_2020'+str(x)+'.svg',bbox_inches='tight',format='svg')
     plt.show()
-"""
 
+"""
+m = folium.Map(location=[43.3758766,-1.2983944], # center of the folium map
+                tiles="OpenStreetMap",
+                min_zoom=6, max_zoom=15, # zoom range
+                zoom_start=9) # initial zoom
+
+
+folium.Choropleth(geo_data=geoDonneesMainDf,
+                data=geoDonneesMainDf,
+                columns=["echelle",'n_exploit'],
+                key_on="feature.properties.echelle",
+                fill_color="YlGn",
+                fill_opacity=0.85,
+                smooth_factor=0,
+                Highlight= True,
+                line_color = "#0000",
+                name = "Données",
+                show=True,
+                overlay=True,).add_to(m)
+
+style_function = lambda x: {'fillColor': '#ffffff', 
+                            'color':'#000000', 
+                            'fillOpacity': 0.1, 
+                            'weight': 0.1}
+highlight_function = lambda x: {'fillColor': '#000000', 
+                                'color':'#000000', 
+                                'fillOpacity': 0.50, 
+                                'weight': 0.1}
+
+IHM = folium.features.GeoJson(
+    data = geoDonneesMainDf,
+    style_function=style_function, 
+    control=False,
+    highlight_function=highlight_function, 
+    tooltip=folium.features.GeoJsonTooltip(
+        fields=['echelle','n_exploit'],
+        aliases=['echelle','Nombre d\'exploitations :'],
+        style=("background-color: white; color: #222222; font-family: arial; font-size: 12px; padding: 10px;") 
+    )
+)
+m.add_child(IHM)
+m.keep_in_front(IHM)
+
+# Ajout de de mode de carte 
+folium.TileLayer('cartodbpositron',name="clair",control=True).add_to(m)
+folium.TileLayer("Stamen Terrain",name="relief",control=True).add_to(m)
+
+# Ajout d'une interface de contrôle
+folium.LayerControl(collapsed=False).add_to(m)
+
+
+m
