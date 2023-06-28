@@ -274,8 +274,10 @@ for x in regroupementPole:
     plt.show()
 
 """
+
 dfVariation = pd.read_table('Data/variation1970-2020.csv', sep=';')
-l = ['echelle','variation']
+l = list(dfVariation.columns)
+l[0] = 'echelle'
 dfVariation.columns = l
 
 gdfVariation = geoDonneesPole.merge(dfVariation, on='echelle')
@@ -283,18 +285,17 @@ gdfVariation = geoDonneesPole.merge(dfVariation, on='echelle')
 
 
 
-m = folium.Map(location=[43.3758766,-1.2983944], # center of the folium map
+m = folium.Map(location=[43.25,-1.29], # center of the folium map
                 tiles = "OpenStreetMap",
-                min_zoom=6, max_zoom=15, # zoom range
-                zoom_start=9) # initial zoom
+                min_zoom=9, max_zoom=10, # zoom range
+                zoom_start=10) # initial zoom
 
 
 folium.Choropleth(geo_data=gdfVariation,
                 data=gdfVariation,
-                columns=["echelle",'variation'],
+                columns=["echelle",'taux_1970-2020'],
                 key_on="feature.properties.echelle",
-                fill_color='RdYlGn',
-                bins = [-0.83,-0.65,-0.50,-0.40,-0.25,0,0.05,0.1,0.19,0.3],
+                fill_color='Reds_r',
                 legend_name="Taux de variation du nombre d'exploitation entre 1970 & 2020",
                 fill_opacity=0.95,
                 smooth_factor=0,
@@ -320,7 +321,7 @@ IHM = folium.features.GeoJson(
     control=False,
     highlight_function=highlight_function, 
     tooltip=folium.features.GeoJsonTooltip(
-        fields=['echelle','variation'],
+        fields=['echelle','taux_1970-2020'],
         aliases=['echelle','Taux de variation :'],
         style=("background-color: white; color: #222222; font-family: arial; font-size: 12px; padding: 10px;") 
     )
@@ -337,3 +338,8 @@ folium.LayerControl(collapsed=False).add_to(m)
 
 
 m.save("CarteVariation1970-2020.html")
+
+
+
+#dfCommunes = pd.read_table('Data/capb-contour-des-communes.csv',sep=";")
+
