@@ -6,6 +6,8 @@ import contextily as ctx
 import geodatasets as gds
 import folium
 from folium.plugins import StripePattern
+from xyzservices import TileProvider
+import matplotlib.pyplot as plt
 
 
 
@@ -55,71 +57,175 @@ geoDonneesMainDf = geoDonneesPole.merge(mainDf, on="echelle")
 
 app = Flask(__name__)
 
-@app.route("/") # Page D'accueil
+@app.route("/") # Page De chargement
+def chargement():
+    return render_template_string(
+        open("chargement.html").read())
+
+@app.route("/accueil") # Page D'accueil
 def Accueil():
+    dfVariation = pd.read_table('Data/variation1970-2020.csv', sep=';')
+    l = list(dfVariation.columns)
+    l[0] = 'echelle'
+    dfVariation.columns = l
+
+    gdfVariation = geoDonneesPole.merge(dfVariation, on='echelle')
+    #variation_decennale
+    
+    tiles = TileProvider(
+        url='https://server.arcgisonline.com/ArcGIS/rest/services/World_Shaded_Relief/MapServer/tile/{z}/{y}/{x}',
+        attribution='Tiles &copy; Esri &mdash; Source: Esri',
+        name='Esri World Shaded Relief',
+    )
     m = folium.Map(location=[43.3758766,-1.2983944], # center of the folium map
-                tiles="cartodbdark_matter",
+                tiles=tiles,
                 min_zoom=10, max_zoom=10, # zoom range = donc pas de zoom possible
                 zoom_start=10,
-                min_lon=43.3758766, max_lon=-1.2983944, 
-                min_lat=43.3758766, max_lat=1.2983944)
+                max_bounds=True, # limites de la carte
+                # min_lon=42.9946180429134, max_lon=43.621640458022526, 
+                # min_lat=-1.9649778623793732, max_lat=-1.1722117212575165,
+                zoom_control=False)
 
 
-    folium.Choropleth(geo_data=geoDonneesMainDf,
-                    key_on="feature.properties.echelle",
-                    nan_fill_color="white",
-                    fill_color="#f1f1f1",
-                    fill_opacity=0.67,
-                    smooth_factor=0,
-                    Highlight= True,
-                    line_color = "#0000",
-                    name = "Pôles",
-                    show=True,
-                    overlay=True,).add_to(m)
+    folium.Choropleth(geo_data=gdfVariation,
+                data=gdfVariation,
+                columns=["echelle",'taux_1970-2020'],
+                key_on="feature.properties.echelle",
+                fill_color='Reds_r',
+                legend_name="Taux de variation du nombre d'exploitation entre 1970 & 2020",
+                fill_opacity=0.95,
+                smooth_factor=0,
+                Highlight= True,
+                line_color = "#0000",
+                name = "Données",
+                show=True,
+                overlay=True,).add_to(m)
 
     style_function = lambda x: {'fillColor': '#ffffff', 
                                 'color':'#000000', 
                                 'fillOpacity': 0.1, 
                                 'weight': 0.1}
-    highlight_function = lambda x: {'fillColor': '#ffffff', 
+
+    highlight_function = lambda x: {'fillColor': '#000000', 
                                     'color':'#000000', 
-                                    'fillOpacity': 1, 
+                                    'fillOpacity': 0.50, 
                                     'weight': 0.1}
 
     IHM = folium.features.GeoJson(
-        data = geoDonneesMainDf,
+        data = gdfVariation,
         style_function=style_function, 
         control=False,
         highlight_function=highlight_function, 
         tooltip=folium.features.GeoJsonTooltip(
-            fields=['echelle'],
-            aliases=['Pôle :'],
+            fields=['echelle','taux_1970-2020'],
+            aliases=['echelle','Taux de variation :'],
             style=("background-color: white; color: #222222; font-family: arial; font-size: 12px; padding: 10px;") 
         )
     )
     m.add_child(IHM)
     m.keep_in_front(IHM)
 
-    # Ajout de de mode de carte 
-    folium.TileLayer('OpenStreetMap',name="OpenStreetMap",control=True).add_to(m)
-    folium.TileLayer("Stamen Terrain",name="relief",control=True).add_to(m)
+    # # Ajout de de mode de carte 
+    # folium.TileLayer('OpenStreetMap',name="OpenStreetMap",control=True).add_to(m)
+    # folium.TileLayer("Stamen Terrain",name="relief",control=True).add_to(m)
 
-    # Ajout d'une interface de contrôle
-    folium.LayerControl(collapsed=False).add_to(m)
+    # # Ajout d'une interface de contrôle
+    # folium.LayerControl(collapsed=False).add_to(m)
 
     m.get_root().render()
     header = m.get_root().header.render()
     body_html = m.get_root().html.render()
-    script = m.get_root().script.render()
-    
-    
+    script = m.get_root().script.render()    
     
     return render_template_string(
-        open("index.html").read(),
+        open("indexV2.html").read(),
         header=header,
         body_html=body_html,
         script=script,
     )
+    
+# @app.route("/carte<int:numero>")
+# def carte(numero : int):
+#     devenirExploitation = {1:"pas de départ du chef ou coexploitant envisagé dans l'immédiat",
+#                        2:"disparition des terres au profit d'un usage non agricole",
+#                        3:"nombre d'exploitations non concernées",
+#                        4:"reprise par un coexploitant, un membre de la famille ou un tiers",
+#                        5:"ne sait pas",
+#                        6:"total d'exploitations concernées",
+#                        7:"disparition au profit de l'agrandissement d'une ou plusieurs autres exploitations"}
+    
+#     m = folium.Map(location=[43.3758766,-1.2983944], # center of the folium map
+#                     tiles="OpenStreetMap",
+#                     min_zoom=6, max_zoom=15, # zoom range
+#                     zoom_start=9) # initial zoom
+
+
+#     folium.Choropleth(geo_data=geoDonneesMainDf,
+#                     data=geoDonneesMainDf,
+#                     columns=["echelle",devenirExploitation[numero]],
+#                     key_on="feature.properties.echelle",
+#                     fill_color="YlGn",
+#                     fill_opacity=0.85,
+#                     smooth_factor=0,
+#                     Highlight= True,
+#                     line_color = "#0000",
+#                     name = "Données",
+#                     show=True,
+#                     overlay=True,).add_to(m)
+
+#     style_function = lambda x: {'fillColor': '#ffffff', 
+#                                 'color':'#000000', 
+#                                 'fillOpacity': 0.1, 
+#                                 'weight': 0.1}
+#     highlight_function = lambda x: {'fillColor': '#000000', 
+#                                     'color':'#000000', 
+#                                     'fillOpacity': 0.50, 
+#                                     'weight': 0.1}
+
+#     IHM = folium.features.GeoJson(
+#         data = geoDonneesMainDf,
+#         style_function=style_function, 
+#         control=False,
+#         highlight_function=highlight_function, 
+#         tooltip=folium.features.GeoJsonTooltip(
+#             fields=['echelle',devenirExploitation[numero]],
+#             aliases=['echelle',devenirExploitation[numero] + ' (en %)'],
+#             style=("background-color: white; color: #222222; font-family: arial; font-size: 12px; padding: 10px;") 
+#         )
+#     )
+#     m.add_child(IHM)
+#     m.keep_in_front(IHM)
+
+#     # Ajout de de mode de carte 
+#     folium.TileLayer('cartodbdark_matter',name="dark mode",control=True).add_to(m)
+#     folium.TileLayer("Stamen Terrain",name="relief",control=True).add_to(m)
+
+#     # Ajout d'une interface de contrôle
+#     folium.LayerControl(collapsed=False).add_to(m)
+    
+#     m.get_root().render()
+#     header = m.get_root().header.render()
+#     body_html = m.get_root().html.render()
+#     script = m.get_root().script.render()
+    
+    
+    
+#     return render_template_string(
+#         open("carte.html").read(),
+#         header=header,
+#         titre=devenirExploitation[numero],
+#         body_html=body_html,
+#         script=script,
+#     )
+    
 
 if __name__ == "__main__":
     app.run(debug=True)
+    
+    
+# Codes couleurs
+# Couleur 1 : #29521a
+# Couleur 2 : #007e20
+# Couleur 3 : #1caa56
+# Couleur 4 : #a3d8ab
+# Couleur 5 : #d8fcd9
