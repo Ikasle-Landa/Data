@@ -597,8 +597,8 @@ for poles in chiffresCles.index.unique():
         tauxDeVariationTot = tauxDeVariationTot / list(evol_sau_tot.loc[evol_sau_tot.index==evol_sau_tot.index[annee], 'sau_tot_ha'])[0]
         listeTot.append(tauxDeVariationTot)
 
-    plt.plot([1970, 1979, 1988, 2000, 2010], listeMoy, color="r")
-    plt.plot([1970, 1979, 1988, 2000, 2010], listeTot, color="b")
+    plt.plot([1979, 1988, 2000, 2010, 2020], listeMoy, color="r")
+    plt.plot([1979, 1988, 2000, 2010, 2020], listeTot, color="b")
     titre = 'Taux de variation de la Sau Totale et de la Sau moyenne sur le pole de ' + str(poles)
     plt.title(titre)
     titre = titre + '.svg'
