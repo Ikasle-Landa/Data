@@ -36,7 +36,7 @@ Représentation chronologique nb exploitations ----------------------
 # Importation des données pour chaque pôle
 # et les données sur l'ensemble du pays
 # basque, regroupées en un dictionnaire
-poles = {
+evol_nb_exploit = {
     'Amikuze': pd.read_table("./fichiersParPole/fts_ra2020_amikuze/evolution_n_exploit_sau-Tableau 1.csv", sep=";",decimal=","),
     'Cote Basque Adour': pd.read_table("./fichiersParPole/fts_ra2020_cote_basque_adour/evolution_n_exploit_sau-Tableau 1.csv", sep=";",decimal=","),
     'Errobi': pd.read_table("./fichiersParPole/fts_ra2020_errobi/evolution_n_exploit_sau-Tableau 1.csv", sep=";",decimal=","),
@@ -50,19 +50,20 @@ poles = {
     'Ca du Pays Basque': pd.read_table("./fichiersParPole/fts_ra2020_ca_du_pays_basque/evolution_n_exploit_sau-Tableau 1.csv", sep=";",decimal=",")
 }
 
-otexPoles = {
-    'Amikuze': pd.read_table("./fichiersParPole/fts_ra2020_amikuze/otex-Tableau 1.csv", sep=";"),
-    'Cote Basque Adour': pd.read_table("./fichiersParPole/fts_ra2020_cote_basque_adour/otex-Tableau 1.csv", sep=";"),
-    'Errobi': pd.read_table("./fichiersParPole/fts_ra2020_errobi/otex-Tableau 1.csv", sep=";"),
-    'Garazi Baigorri': pd.read_table("./fichiersParPole/fts_ra2020_garazi_baigorri/otex-Tableau 1.csv", sep=";"),
-    'Iholdi Oztibarre': pd.read_table("./fichiersParPole/fts_ra2020_iholdi_oztibarre/otex-Tableau 1.csv", sep=";"),
-    'Nive Adour': pd.read_table("./fichiersParPole/fts_ra2020_nive_adour/otex-Tableau 1.csv", sep=";"),
-    'Pays de Bidache': pd.read_table("./fichiersParPole/fts_ra2020_pays_de_bidache/otex-Tableau 1.csv", sep=";"),
-    'Pays d\'Hasparren': pd.read_table("./fichiersParPole/fts_ra2020_pays_d_hasparren/otex-Tableau 1.csv", sep=";"),
-    'Soule Xiberoa': pd.read_table("./fichiersParPole/fts_ra2020_soule_xiberoa/otex-Tableau 1.csv", sep=";"),
-    'Sud Pays Basque': pd.read_table("./fichiersParPole/fts_ra2020_sud_pays_basque/otex-Tableau 1.csv", sep=";"),
-    'Ca du Pays Basque': pd.read_table("./fichiersParPole/fts_ra2020_ca_du_pays_basque/otex-Tableau 1.csv", sep=";")
-}
+
+# otexPoles = {
+#     'Amikuze': pd.read_table("./fichiersParPole/fts_ra2020_amikuze/otex-Tableau 1.csv", sep=";"),
+#     'Cote Basque Adour': pd.read_table("./fichiersParPole/fts_ra2020_cote_basque_adour/otex-Tableau 1.csv", sep=";"),
+#     'Errobi': pd.read_table("./fichiersParPole/fts_ra2020_errobi/otex-Tableau 1.csv", sep=";"),
+#     'Garazi Baigorri': pd.read_table("./fichiersParPole/fts_ra2020_garazi_baigorri/otex-Tableau 1.csv", sep=";"),
+#     'Iholdi Oztibarre': pd.read_table("./fichiersParPole/fts_ra2020_iholdi_oztibarre/otex-Tableau 1.csv", sep=";"),
+#     'Nive Adour': pd.read_table("./fichiersParPole/fts_ra2020_nive_adour/otex-Tableau 1.csv", sep=";"),
+#     'Pays de Bidache': pd.read_table("./fichiersParPole/fts_ra2020_pays_de_bidache/otex-Tableau 1.csv", sep=";"),
+#     'Pays d\'Hasparren': pd.read_table("./fichiersParPole/fts_ra2020_pays_d_hasparren/otex-Tableau 1.csv", sep=";"),
+#     'Soule Xiberoa': pd.read_table("./fichiersParPole/fts_ra2020_soule_xiberoa/otex-Tableau 1.csv", sep=";"),
+#     'Sud Pays Basque': pd.read_table("./fichiersParPole/fts_ra2020_sud_pays_basque/otex-Tableau 1.csv", sep=";"),
+#     'Ca du Pays Basque': pd.read_table("./fichiersParPole/fts_ra2020_ca_du_pays_basque/otex-Tableau 1.csv", sep=";")
+# }
 
 # Importation des données du 
 # Pays Basque
@@ -72,7 +73,15 @@ nbExploitFrance = [1591036,1270085,1088731,763953,603884,496365]
 # Initialisation du dataframe
 # contenant le nombre d'exploitation
 # sur plusieures années par pole
-dfToChrono = pd.DataFrame(
+df_evol_nb_exploit = pd.DataFrame(
+    index=['Amikuze','Cote Basque Adour','Errobi',
+           'Garazi Baigorri','Iholdi Oztibarre','Nive Adour',
+           'Pays de Bidache','Pays d\'Hasparren','Soule Xiberoa',
+           'Sud Pays Basque','Ca du Pays Basque','France'],
+    columns=[1970,1979,1988,2000,2010,2020]
+)
+
+df_evol_sau = pd.DataFrame(
     index=['Amikuze','Cote Basque Adour','Errobi',
            'Garazi Baigorri','Iholdi Oztibarre','Nive Adour',
            'Pays de Bidache','Pays d\'Hasparren','Soule Xiberoa',
@@ -91,12 +100,13 @@ dfComparaisonFrancePaysBasque = pd.DataFrame(
 
 # Ajout des nombres d'exploitation pour chaque
 # année et par pôle
-for key in poles:
-    for index,row in poles[key].iterrows():
-        dfToChrono.loc[key,row[0]] = row[2]
+for key in evol_nb_exploit:
+    for index,row in evol_nb_exploit[key].iterrows():
+        df_evol_nb_exploit.loc[key,row[0]] = row[1]
+        df_evol_sau.loc[key,row[0]] = row[2]
 
 for i in range(len(nbExploitFrance)):
-    dfToChrono.iloc[11,i] = nbExploitFrance[i]
+    df_evol_nb_exploit.iloc[11,i] = nbExploitFrance[i]
 
 def racineN(x,n):
     return x**(1/float(n))
@@ -105,15 +115,16 @@ def racineN(x,n):
 varDecennale = []
 varSur1an = []
 varEntre2010et2020 = []
-for i in range(len(dfToChrono)):
-    varDecennale.append((dfToChrono.iloc[i,5],dfToChrono.iloc[i,0]))
-    varEntre2010et2020.append((dfToChrono.iloc[i,5],dfToChrono.iloc[i,4]))
+for i in range(len(df_evol_nb_exploit)):
+    varDecennale.append((df_evol_nb_exploit.iloc[i,5],df_evol_nb_exploit.iloc[i,0]))
+    varSur1an.append((df_evol_nb_exploit.iloc[i,5],df_evol_nb_exploit.iloc[i,0]))
+    varEntre2010et2020.append((df_evol_nb_exploit.iloc[i,5],df_evol_nb_exploit.iloc[i,4]))
 for i in range(len(varDecennale)):
     x=float(varDecennale[i][0]/varDecennale[i][1])
-    e=float((varDecennale[i][0]-varDecennale[i][1])/varDecennale[i][1])
+    e=float((varSur1an[i][0]-varSur1an[i][1])/varSur1an[i][1])
     d=float((varEntre2010et2020[i][0]-varEntre2010et2020[i][1])/varEntre2010et2020[i][1])
     varDecennale[i]="%.2f"%((racineN(x,5)-1)*100) 
-    varSur1an.append("%.2f"%e)
+    varSur1an[i]="%.2f"%e
     varEntre2010et2020[i]="%.2f"%d  
 
 # Taux décennal moyen racine 5eme  
@@ -126,14 +137,14 @@ for i in range(len(varDecennale)):
 
 # Ajout des nombres d'exploitation pour chaque
 # année et pour la France et le Pays Basque
-for index,row in nbExploitPaysBasque.iterrows():
-    dfComparaisonFrancePaysBasque.loc['Ca du Pays Basque',row[0]] = row[1]
-for i in range(len(nbExploitFrance)):
-    dfComparaisonFrancePaysBasque.iloc[1,i] = nbExploitFrance[i]
+# for index,row in nbExploitPaysBasque.iterrows():
+#     dfComparaisonFrancePaysBasque.loc['Ca du Pays Basque',row[0]] = row[1]
+# for i in range(len(nbExploitFrance)):
+#     dfComparaisonFrancePaysBasque.iloc[1,i] = nbExploitFrance[i]
 
 # Inversion des colonnes et lignes
 # pour réaliser le graphique chronologique
-# dfToPlot = dfToChrono.iloc[0:9,:].transpose()
+# dfToPlot = df_evol_nb_exploit.iloc[0:9,:].transpose()
 # dfToPlot.plot(colormap='YlGn',
 #               logy=True,
 #               legend=True)
@@ -155,11 +166,11 @@ for i in range(len(nbExploitFrance)):
 
 # # Ajout du taux variation au dataframe
 ls=pd.Series(varDecennale)
-dfToChrono['variation_decennale']=ls.values
+df_evol_nb_exploit['taux_decennale']=ls.values
 ls=pd.Series(varSur1an)
-dfToChrono['variation_1970-2020']=ls.values
+df_evol_nb_exploit['taux_1970-2020']=ls.values
 ls=pd.Series(varEntre2010et2020)
-dfToChrono['variation_entre_2010_2020']=ls.values
+df_evol_nb_exploit['taux_2010-2020']=ls.values
 
 
 
@@ -175,7 +186,7 @@ Graphique en radar -------------------------------------------------------------
 # r=np.degrees(rad)
 # plt.figure(figsize=(8,8))
 # plt.subplot(polar=True)
-# plt.plot(label_loc,pole1,label=dfToChrono.index[0])
+# plt.plot(label_loc,pole1,label=df_evol_nb_exploit.index[0])
 # plt.title('toto')
 # lines, labels = plt.thetagrids(range(0,360,72),labels=categories)
 # plt.legend()
@@ -187,66 +198,67 @@ Bubble plot ca_du_pays_basque --------------------------------------------------
 """
 
 # A utiliser pour le bubble plutot que les données en durs
-# datf=dfToChrono.iloc[0:10,:]
+# datf=df_evol_nb_exploit.iloc[0:10,:]
 # l=pd.Series(datf.index)
 # datf['pole'] = l.values
 # datf.reset_index(drop=True,inplace=True)
-size=[150,150,150,150]
-color=["red","orange","blue","green"]
 
-# Nb exploit 2010 - 2020 par taille exploit
-micro2010=list([172,25,262,184,79,71,197,79,212,219,1500,np.nan])
-micro2020=list([160,16,186,179,75,59,188,83,163,154,1263,np.nan])
-petite2010=list([292,16,121,535,194,27,268,92,428,135,2108,np.nan])
-petite2020=list([229,8,97,410,161,19,199,7,308,120,1628,np.nan])
-moyenne2010=list([158,7,33,150,107,12,101,65,103,35,771,np.nan])
-moyenne2020=list([144,3,36,170,112,13,108,52,121,37,796,np.nan])
-grande2010=list([20,np.nan,np.nan,6,6,3,10,20,3,5,76,np.nan])
-grande2020=list([19,np.nan,5,11,8,np.nan,13,19,9,np.nan,90,np.nan])
+# size=[150,150,150,150]
+# color=["red","orange","blue","green"]
 
-# # Sau des poles 2010 - 2020 par taille exploit
-sauMicro2010=list([1745.31,178.31,1833.05,2306.02,1232.73,618.42,1955.05,873.79,2374.2,1665.61,14782.49,np.nan])
-sauMicro2020=list([2215.84,135.65,1508.2,2205.38,924.2,516.76,2355.55,1308.2,2232.41,1549.36,14951.55,np.nan])
-sauPetite2010=list([10228.44,77.76,3467.48,14573.88,6372.97,65.123,8774.94,3637.94,14956.01,3475.23,66239.88,np.nan])
-sauPetite2020=list([8816.89,79.9,2783.3,11751.33,6034.5,556.78,6761.42,3044.76,11903.29,3283.33,55015.5,np.nan])
-sauMoyenne2010=list([9044.44,139.72,1533.21,6191.65,5434.83,474.28,5015.61,3631.07,6133.83,1306.27,38904.91,np.nan])
-sauMoyenne2020=list([8989.93,8.59,1694.27,7729.47,6125.36,526.51,5779.08,3522.89,8275.95,1508.84,44160.89,np.nan])
-sauGrande2010=list([1057.5,np.nan,np.nan,173.69,337.06,91,561.21,1422.3,272.45,410.85,4470.63,np.nan])
-sauGrande2020=list([1312.8,np.nan,345.52,428.86,357.69,np.nan,759.55,1305.16,691.06,np.nan,5424.04,np.nan])
+# # Nb exploit 2010 - 2020 par taille exploit
+# micro2010=list([172,25,262,184,79,71,197,79,212,219,1500,np.nan])
+# micro2020=list([160,16,186,179,75,59,188,83,163,154,1263,np.nan])
+# petite2010=list([292,16,121,535,194,27,268,92,428,135,2108,np.nan])
+# petite2020=list([229,8,97,410,161,19,199,7,308,120,1628,np.nan])
+# moyenne2010=list([158,7,33,150,107,12,101,65,103,35,771,np.nan])
+# moyenne2020=list([144,3,36,170,112,13,108,52,121,37,796,np.nan])
+# grande2010=list([20,np.nan,np.nan,6,6,3,10,20,3,5,76,np.nan])
+# grande2020=list([19,np.nan,5,11,8,np.nan,13,19,9,np.nan,90,np.nan])
 
-dfToChrono['nb_exploit_micro_2010']=micro2010
-dfToChrono['nb_exploit_petite_2010']=petite2010
-dfToChrono['nb_exploit_moyenne_2010']=moyenne2010
-dfToChrono['nb_exploit_grande_2010']=grande2010
+# # # Sau des poles 2010 - 2020 par taille exploit
+# sauMicro2010=list([1745.31,178.31,1833.05,2306.02,1232.73,618.42,1955.05,873.79,2374.2,1665.61,14782.49,np.nan])
+# sauMicro2020=list([2215.84,135.65,1508.2,2205.38,924.2,516.76,2355.55,1308.2,2232.41,1549.36,14951.55,np.nan])
+# sauPetite2010=list([10228.44,77.76,3467.48,14573.88,6372.97,65.123,8774.94,3637.94,14956.01,3475.23,66239.88,np.nan])
+# sauPetite2020=list([8816.89,79.9,2783.3,11751.33,6034.5,556.78,6761.42,3044.76,11903.29,3283.33,55015.5,np.nan])
+# sauMoyenne2010=list([9044.44,139.72,1533.21,6191.65,5434.83,474.28,5015.61,3631.07,6133.83,1306.27,38904.91,np.nan])
+# sauMoyenne2020=list([8989.93,8.59,1694.27,7729.47,6125.36,526.51,5779.08,3522.89,8275.95,1508.84,44160.89,np.nan])
+# sauGrande2010=list([1057.5,np.nan,np.nan,173.69,337.06,91,561.21,1422.3,272.45,410.85,4470.63,np.nan])
+# sauGrande2020=list([1312.8,np.nan,345.52,428.86,357.69,np.nan,759.55,1305.16,691.06,np.nan,5424.04,np.nan])
 
-dfToChrono['nb_exploit_micro_2020']=micro2020
-dfToChrono['nb_exploit_petite_2020']=petite2020
-dfToChrono['nb_exploit_moyenne_2020']=moyenne2020
-dfToChrono['nb_exploit_grande_2020']=grande2020
+# df_evol_nb_exploit['nb_exploit_micro_2010']=micro2010
+# df_evol_nb_exploit['nb_exploit_petite_2010']=petite2010
+# df_evol_nb_exploit['nb_exploit_moyenne_2010']=moyenne2010
+# df_evol_nb_exploit['nb_exploit_grande_2010']=grande2010
 
-dfToChrono['sau_micro_2010']=sauMicro2010
-dfToChrono['sau_petite_2010']=sauPetite2010
-dfToChrono['sau_moyenne_2010']=sauMoyenne2010
-dfToChrono['sau_grande_2010']=sauGrande2010
+# df_evol_nb_exploit['nb_exploit_micro_2020']=micro2020
+# df_evol_nb_exploit['nb_exploit_petite_2020']=petite2020
+# df_evol_nb_exploit['nb_exploit_moyenne_2020']=moyenne2020
+# df_evol_nb_exploit['nb_exploit_grande_2020']=grande2020
 
-dfToChrono['sau_micro_2020']=sauMicro2020
-dfToChrono['sau_petite_2020']=sauPetite2020
-dfToChrono['sau_moyenne_2020']=sauMoyenne2020
-dfToChrono['sau_grande_2020']=sauGrande2020
+# df_evol_nb_exploit['sau_micro_2010']=sauMicro2010
+# df_evol_nb_exploit['sau_petite_2010']=sauPetite2010
+# df_evol_nb_exploit['sau_moyenne_2010']=sauMoyenne2010
+# df_evol_nb_exploit['sau_grande_2010']=sauGrande2010
 
-for index,row in dfToChrono.iterrows():
-    if index != 'France':
-        a = plt.scatter(row[9:13],row[17:21],s=size,color=color)
-        b = plt.scatter(row[13:17],row[21:],s=size,color=color,alpha=0.5)
-        plt.xlabel("Nombre exploitation")
-        plt.ylabel("Surface exploitation")
-        plt.grid(which='both')
-        plt.show()
+# df_evol_nb_exploit['sau_micro_2020']=sauMicro2020
+# df_evol_nb_exploit['sau_petite_2020']=sauPetite2020
+# df_evol_nb_exploit['sau_moyenne_2020']=sauMoyenne2020
+# df_evol_nb_exploit['sau_grande_2020']=sauGrande2020
+
+# for index,row in df_evol_nb_exploit.iterrows():
+#     if index != 'France':
+#         a = plt.scatter(row[9:13],row[17:21],s=size,color=color)
+#         b = plt.scatter(row[13:17],row[21:],s=size,color=color,alpha=0.5)
+#         plt.xlabel("Nombre exploitation")
+#         plt.ylabel("Surface exploitation")
+#         plt.grid(which='both')
+#         plt.show()
 
 
 
-text=["micro\nexploitation\n2010","petite\nexploitation\n2010","moyenne\nexploitation\n2010","grande\nexploitation\n2010"]
-text2=["micro\nexploitation\n2020","petite\nexploitation\n2020","moyenne\nexploitation\n2020","grande\nexploitation\n2020"]
+# text=["micro\nexploitation\n2010","petite\nexploitation\n2010","moyenne\nexploitation\n2010","grande\nexploitation\n2010"]
+# text2=["micro\nexploitation\n2020","petite\nexploitation\n2020","moyenne\nexploitation\n2020","grande\nexploitation\n2020"]
 
 
 # for i in range(len(text)):
@@ -272,5 +284,13 @@ Représentation évolution Otex ------------------------------------------------
 #             col.append(row[2])
 
 
-test=[-30,-12,-5,-2,1,2,12,8]
-pole=list(dfToChrono.index)
+label=list(df_evol_nb_exploit.index)
+test1=[4,12,7,18,11,5,13,3,8,1,3,6]
+test=list(df_evol_nb_exploit['taux_decennale'].values)
+test2=[(float(test[i])) for i in range(len(test))]
+pole=list(df_evol_nb_exploit.index)
+plt.barh(label,width=test2,color='red')
+plt.barh(label,width=test1,color='green')
+plt.show()
+
+# df_evol_nb_exploit.to_csv("./assets/evol.csv",decimal=",",sep=";")
