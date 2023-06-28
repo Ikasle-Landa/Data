@@ -6,6 +6,7 @@ import pandas as pd
 import geopandas as gp
 
 
+
 """
 Cartographie des pôles pays basque ---------------------------------
 """
@@ -103,7 +104,7 @@ dfComparaisonFrancePaysBasque = pd.DataFrame(
 for key in evol_nb_exploit:
     for index,row in evol_nb_exploit[key].iterrows():
         df_evol_nb_exploit.loc[key,row[0]] = row[1]
-        df_evol_sau.loc[key,row[0]] = row[2]
+        df_evol_sau.loc[key,row[0]] = row[3]
 
 for i in range(len(nbExploitFrance)):
     df_evol_nb_exploit.iloc[11,i] = nbExploitFrance[i]
@@ -111,23 +112,29 @@ for i in range(len(nbExploitFrance)):
 def racineN(x,n):
     return x**(1/float(n))
 
-# Calcul du taux variation
-varDecennale = []
-varSur1an = []
-varEntre2010et2020 = []
+# Calcul du taux variation nb_exploit et sau_moy
+tauxDecennaleNbExploit = []
+tauxNbExploit = []
+tauxNbExploit2010et2020 = []
+tauxDecennaleSauMoy = []
+tauxSauMoy = []
+tauxSauMoy2010et2020 = []
 for i in range(len(df_evol_nb_exploit)):
-    varDecennale.append((df_evol_nb_exploit.iloc[i,5],df_evol_nb_exploit.iloc[i,0]))
-    varSur1an.append((df_evol_nb_exploit.iloc[i,5],df_evol_nb_exploit.iloc[i,0]))
-    varEntre2010et2020.append((df_evol_nb_exploit.iloc[i,5],df_evol_nb_exploit.iloc[i,4]))
-for i in range(len(varDecennale)):
-    x=float(varDecennale[i][0]/varDecennale[i][1])
-    e=float((varSur1an[i][0]-varSur1an[i][1])/varSur1an[i][1])
-    d=float((varEntre2010et2020[i][0]-varEntre2010et2020[i][1])/varEntre2010et2020[i][1])
-    varDecennale[i]="%.2f"%((racineN(x,5)-1)*100) 
-    varSur1an[i]="%.2f"%e
-    varEntre2010et2020[i]="%.2f"%d  
-
-# Taux décennal moyen racine 5eme  
+    tauxDecennaleNbExploit.append((df_evol_nb_exploit.iloc[i,5],df_evol_nb_exploit.iloc[i,0]))
+    tauxNbExploit.append((df_evol_nb_exploit.iloc[i,5],df_evol_nb_exploit.iloc[i,0]))
+    tauxNbExploit2010et2020.append((df_evol_nb_exploit.iloc[i,5],df_evol_nb_exploit.iloc[i,4]))
+    tauxDecennaleSauMoy.append((df_evol_sau.iloc[i,5],df_evol_sau.iloc[i,0]))
+    tauxSauMoy.append((df_evol_sau.iloc[i,5],df_evol_sau.iloc[i,0]))
+    tauxSauMoy2010et2020.append((df_evol_sau.iloc[i,5],df_evol_sau.iloc[i,4]))
+for i in range(len(tauxDecennaleNbExploit)):
+    x=float(tauxDecennaleNbExploit[i][0]/tauxDecennaleNbExploit[i][1])
+    tauxDecennaleNbExploit[i]=round(((racineN(x,5)-1)*100),2) 
+    tauxNbExploit[i]=round(float((tauxNbExploit[i][0]-tauxNbExploit[i][1])/tauxNbExploit[i][1]),2)
+    tauxNbExploit2010et2020[i]=round(float((tauxNbExploit2010et2020[i][0]-tauxNbExploit2010et2020[i][1])/tauxNbExploit2010et2020[i][1]),2)
+    x=float(tauxDecennaleSauMoy[i][0]/tauxDecennaleSauMoy[i][1])
+    tauxDecennaleSauMoy[i]=round(((racineN(x,5)-1)*100),2) 
+    tauxSauMoy[i]=round(float((tauxSauMoy[i][0]-tauxSauMoy[i][1])/tauxSauMoy[i][1]),2)
+    tauxSauMoy2010et2020[i]= round(float((tauxSauMoy2010et2020[i][0]-tauxSauMoy2010et2020[i][1])/tauxSauMoy2010et2020[i][1]),2)
 
 # color 1 : #29521a
 # color 2 : #007e20
@@ -165,13 +172,19 @@ for i in range(len(varDecennale)):
 
 
 # # Ajout du taux variation au dataframe
-ls=pd.Series(varDecennale)
+ls=pd.Series(tauxDecennaleNbExploit)
 df_evol_nb_exploit['taux_decennale']=ls.values
-ls=pd.Series(varSur1an)
+ls=pd.Series(tauxNbExploit)
 df_evol_nb_exploit['taux_1970-2020']=ls.values
-ls=pd.Series(varEntre2010et2020)
+ls=pd.Series(tauxNbExploit2010et2020)
 df_evol_nb_exploit['taux_2010-2020']=ls.values
 
+ls=pd.Series(tauxDecennaleSauMoy)
+df_evol_sau['taux_decennale']=ls.values
+ls=pd.Series(tauxSauMoy)
+df_evol_sau['taux_1970-2020']=ls.values
+ls=pd.Series(tauxSauMoy2010et2020)
+df_evol_sau['taux_2010-2020']=ls.values
 
 
 """ 
@@ -284,13 +297,19 @@ Représentation évolution Otex ------------------------------------------------
 #             col.append(row[2])
 
 
-label=list(df_evol_nb_exploit.index)
-test1=[4,12,7,18,11,5,13,3,8,1,3,6]
-test=list(df_evol_nb_exploit['taux_decennale'].values)
-test2=[(float(test[i])) for i in range(len(test))]
-pole=list(df_evol_nb_exploit.index)
-plt.barh(label,width=test2,color='red')
-plt.barh(label,width=test1,color='green')
+label=list(df_evol_sau.index)
+s = label.pop(11)
+txDecNbExploit=list(df_evol_nb_exploit['taux_decennale'].values)
+s = txDecNbExploit.pop(11)
+txDecSauMoy=list(df_evol_sau['taux_decennale'].values)
+s = txDecSauMoy.pop(11)
+plt.barh(label,width=txDecNbExploit,color='red')
+for i in range(len(txDecNbExploit)):
+    plt.text(txDecNbExploit[i]/2,i-0.15,str(txDecNbExploit[i])+' %',ha='center',color='white')
+plt.barh(label,width=txDecSauMoy,color='green')
+for i in range(len(txDecSauMoy)):
+    plt.text(txDecSauMoy[i]/2,i-0.15,str(txDecSauMoy[i])+'% ',ha='center',color='white')
+plt.xlabel('taux décennale nombre d\'exploitation  taux décennale sau')
 plt.show()
 
 # df_evol_nb_exploit.to_csv("./assets/evol.csv",decimal=",",sep=";")
