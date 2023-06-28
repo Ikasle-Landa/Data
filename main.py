@@ -310,6 +310,7 @@ plt.barh(label,width=txDecSauMoy,color='green')
 for i in range(len(txDecSauMoy)):
     plt.text(txDecSauMoy[i]/2,i-0.15,str(txDecSauMoy[i])+'% ',ha='center',color='white')
 plt.xlabel('taux décennale nombre d\'exploitation  taux décennale sau')
+#plt.savefig('./assets/evol_tx_dec.svg',format='svg',bbox_inches='tight')
 plt.show()
 
 # df_evol_nb_exploit.to_csv("./assets/evol.csv",decimal=",",sep=";")
