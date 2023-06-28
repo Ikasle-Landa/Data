@@ -1,12 +1,14 @@
 import geopandas as gpd
-import pandas as pd, requests, json
+import pandas as pd
 import numpy as np
 from flask import Flask
 from numpy import nan
 import contextily as cx
 import matplotlib.pyplot as plt
 import matplotlib.markers as mrk
+import glob
 import mapclassify
+import glob
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #                           Importation                         #
@@ -184,17 +186,19 @@ infosPôle = {
 }
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#                             Création                          #
-#                               de                              #
-#                     Dataframe Pour Cheptels                   #
+#                           Diagrammes                          #
+#                               en                              #
+#                             barres                            #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 #Créer les graphes étudiant les cheptels en 2010
 
 donneesCheptels = pd.read_table("fichier_traite_rga/cheptel-Tableau 1_2.csv", sep=';', index_col=0, na_values=-999)
 
+#Enlever la ligne avec pour index ca_du_pays_basque car c'est le bilan des 10 pôles
 donneesCheptels = donneesCheptels.loc[donneesCheptels.index != 'ca_du_pays_basque', :]
 
+#Enlever les valeurs manquantes
 donneesCheptels.replace(nan, 0, inplace=True)
 
 #Transposition du dataframe pour les traitements suivants
@@ -220,18 +224,20 @@ nouvellesColonnes=['Cheptels bovins', 'Cheptels Ovins', 'Cheptels de Volailles',
                    'Cheptel Equins', 'Apiculture', 'Cheptels Caprins']
 donneesCheptels.columns = nouvellesColonnes
 
+#Affichage du graphique et esthétisme des barres/légendes
 donneesCheptels.plot(kind="bar",stacked=True)
 plt.legend(title="Nombre de Cheptels", bbox_to_anchor = (1.05, 1.0), loc = 'upper left')
 plt.xlabel("Pôle étudié")
 plt.ylabel("Pourcentage sur le pôle")
 plt.title("Répartition des cheptels selon le pôle étudié en 2010")
 
+#Récupérer les indexs et les colonnes pour ajouter les étiquettes des pourcentages sur les barres
 index=donneesCheptels.index
 colonnes = donneesCheptels.columns 
 
-####################################
+# # # # # # # # # # # # # # # # # # # # # # # # #
 # Etiquettes du « Cheptels bovins »
-####################################
+# # # # # # # # # # # # # # # # # # # # # # # # #
 
 plt.text(0, donneesCheptels.loc[index[0],colonnes[0]]/2,
  str(round(donneesCheptels.loc[index[0],colonnes[0]]*100,1))+ '%',
@@ -264,9 +270,9 @@ plt.text(9, donneesCheptels.loc[index[9],colonnes[0]]/2,
  str(round(donneesCheptels.loc[index[9],colonnes[0]]*100,1))+ '%',
  ha = 'center')
 
-####################################
+# # # # # # # # # # # # # # # # # # # # # # # # #
 # Etiquettes du « Cheptels Ovins »
-####################################
+# # # # # # # # # # # # # # # # # # # # # # # # #
 
 plt.text(0, donneesCheptels.loc[index[0],colonnes[0]] + donneesCheptels.loc[index[0],colonnes[1]]/2,
  str(round(donneesCheptels.loc[index[0],colonnes[1]]*100,1))+ '%',
@@ -299,15 +305,20 @@ plt.text(9, donneesCheptels.loc[index[9],colonnes[0]] + donneesCheptels.loc[inde
  str(round(donneesCheptels.loc[index[9],colonnes[1]]*100,1))+ '%',
  ha = 'center')
 
+'''
 nomFormat = 'svg'
 nom = 'barreEmpileesCheptels2010.svg'
 plt.savefig(nom, format=nomFormat, bbox_inches="tight")
+'''
 
 plt.show()
 
-################################################
-#Créer les graphes étudiant les cheptels en 2020
-################################################
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#                           Créer les graphes                   #
+#                               étudiant                        #
+#                        les cheptels en 2020                   #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 donneesCheptels = pd.read_table("fichier_traite_rga/cheptel-Tableau 1_3.csv", sep=';', index_col=0, na_values=-999)
 
@@ -347,9 +358,9 @@ plt.title("Répartition des cheptels selon le pôle étudié en 2020")
 index=donneesCheptels.index
 colonnes = donneesCheptels.columns 
 
-####################################
+# # # # # # # # # # # # # # # # # # # # # # # # #
 # Etiquettes du « total bovins »
-####################################
+# # # # # # # # # # # # # # # # # # # # # # # # #
 
 plt.text(0, donneesCheptels.loc[index[0],colonnes[0]]/2,
  str(round(donneesCheptels.loc[index[0],colonnes[0]]*100,1))+ '%',
@@ -382,9 +393,9 @@ plt.text(9, donneesCheptels.loc[index[9],colonnes[0]]/2,
  str(round(donneesCheptels.loc[index[9],colonnes[0]]*100,1))+ '%',
  ha = 'center')
 
-####################################
-# Etiquettes du « Cheptels Ovins »
-####################################
+# # # # # # # # # # # # # # # # # # # # # # # # #
+# Etiquettes du « Cheptels Ovins »              #
+# # # # # # # # # # # # # # # # # # # # # # # # #
 
 plt.text(0, donneesCheptels.loc[index[0],colonnes[0]] + donneesCheptels.loc[index[0],colonnes[1]]/2,
  str(round(donneesCheptels.loc[index[0],colonnes[1]]*100,1))+ '%',
@@ -417,23 +428,34 @@ plt.text(9, donneesCheptels.loc[index[9],colonnes[0]] + donneesCheptels.loc[inde
  str(round(donneesCheptels.loc[index[9],colonnes[1]]*100,1))+ '%',
  ha = 'center')
 
+'''
 nomFormat = 'svg'
 nom = 'barreEmpileesCheptels2020.svg'
 plt.savefig(nom, format=nomFormat, bbox_inches="tight")
+'''
 
 #Affichage graphique
 plt.show()
 
-################################################
-#Créer graphe radar pour tester
-################################################
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#                               Graphes                         #
+#                               radar                           #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+'''
+
+#Boucle pour créer les 10 graphiques à chaque fois
 for i in range(len(donneesCheptels)):
+    
     #Pour 2010
+
+    #Récupération des données de 2010
     donneesCheptels = pd.read_table("fichier_traite_rga/cheptel-Tableau 1_2.csv", sep=';', index_col=0, na_values=-999)
 
+    #Enlever ca_du_pays_basque
     donneesCheptels = donneesCheptels.loc[donneesCheptels.index != 'ca_du_pays_basque', :]
 
+    #Enlever les valeurs nulles
     donneesCheptels.replace(nan, 0, inplace=True)
 
     #Conversion des cheptels en pourcentage sur chaque pole
@@ -442,19 +464,35 @@ for i in range(len(donneesCheptels)):
         for y in range(len(donneesCheptels[x])):
             donneesCheptels[x][y] = donneesCheptels[x][y] / somme
 
+    #Categories représente les totaux pour les cheptels en pourcentage
     categories=list(donneesCheptels.columns)
+
+    #Prend la valeur des cheptels pour le pole visité
     pole1 = list(donneesCheptels.iloc[i, :])
+
+    #Remettre la première valeur à la fin pour fermer le graphique en radar
     pole1.append(pole1[0])
+
+    #Forme du  en radar
     label_loc=np.linspace(start=0,stop=2*np.pi,num=len(pole1))
 
+    #formation de l'échelle
     rad=np.arange(12.)*np.pi/6
     r=np.degrees(rad)
+
+    #Paramètres du graphique radar
     plt.figure(figsize=(8,8))
     plt.subplot(polar=True)
+
+    #Création du graphique avec les paramètres créés précédemment
     plt.plot(label_loc, pole1, label=donneesCheptels.index[i], color='blue')
+
+    #Grilles et axes
     lines, labels = plt.thetagrids(range(0,360,52),labels=categories)
 
+    
     #Pour 2020
+    #Récupération des données de 2020
     donneesCheptels = pd.read_table("fichier_traite_rga/cheptel-Tableau 1_3.csv", sep=';', index_col=0, na_values=-999)
 
     donneesCheptels = donneesCheptels.loc[donneesCheptels.index != 'ca_du_pays_basque', :]
@@ -467,95 +505,105 @@ for i in range(len(donneesCheptels)):
         for y in range(len(donneesCheptels[x])):
             donneesCheptels[x][y] = donneesCheptels[x][y] / somme
 
+    #Categories représente les totaux pour les cheptels en pourcentage
     categories=list(donneesCheptels.columns)
+
+    #Prend la valeur des cheptels pour le pole visité
     pole1 = list(donneesCheptels.iloc[i, :])
+
+    #Remettre la première valeur à la fin pour fermer le graphique en radar
     pole1.append(pole1[0])
+
+    #Forme du  en radar
     label_loc=np.linspace(start=0,stop=2*np.pi,num=len(pole1))
 
+    #Mise en forme du graphique en radar et création
     titre = 'Répartition des cheptels sur le pole de ' + str(donneesCheptels.index[i]) + ' en 2010 et 2020'
     plt.plot(label_loc, pole1, label=donneesCheptels.index[i], color='red')
     plt.title(titre)
-    plt.legend(('2020', '2010'))
-    plt.show()
+    plt.legend(('2020'))
 
+    #exporter le graphique en svg
     titre = titre + ".svg"
     nomFormat = 'svg'
-    nom = 'barreEmpileesCheptels2010.svg'
     plt.savefig(titre, format=nomFormat, bbox_inches="tight")
 
-#################################
-"""
-Bubble plot ca_du_pays_basque -------------------------------------
-"""
-#################################
-'''
-
-ls=[200,200,200,200,200,200,200,200]
-pole=[1500,2108,771,76,1263,1628,1796,90]
-ann=[14782.49,66239.88,38904.91,4470.63,14951.55,55015.5,44160.89,5424.04]
-color=["#A93F3F","#3F4AA9","#3FA945","#813FA9",
-    "#A93F3F","#3F4AA9","#3FA945","#813FA9"]
-colTest=np.arange(10)
-
-#2010
-for n in range(len(pole)//2) :
-    a = plt.scatter(pole[n],ann[n],s=ls[n],c=color[n], alpha=0.5)
-
-#2020
-for n in range(len(pole)//2, len(pole)) :
-    b = plt.scatter(pole[n],ann[n],s=ls[n],c=color[n], alpha=0.6)
-
-
-plt.xlabel("Nombre exploitation")
-plt.ylabel("Surface exploitation")
-plt.legend((a, b), ('2010', '2020'), title="Année concernée", bbox_to_anchor = (1.05, 1.0), loc = 'upper left')
-plt.grid(which='both')
 plt.show()
-
-'''
-#################################
-#               Test            #
-#           Diagramme type      #
-#               radar           #
-#################################
-
 '''
 
-# Libraries
-from math import pi
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#                                 Etudes                        #
+#                                au début                       #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-# number of variable
-categories=list(donneesCheptels.T)[1:]
-N = len(categories)
 
-# We are going to plot the first line of the data frame.
-# But we need to repeat the first value to close the circular graph:
-values=donneesCheptels.T.loc[0].drop('Étiquettes de lignes').values.flatten().tolist()
-values += values[:1]
-values
 
-# What will be the angle of each axis in the plot? (we divide the plot / number of variable)
-angles = [n / float(N) * 2 * pi for n in range(N)]
-angles += angles[:1]
+# I m p o r t a t i o n
+chiffresCles = pd.read_table("fichier_traite_rga/nombre_exploitation-Tableau 1.csv", sep=';', index_col=0, na_values=-999, decimal=',')
 
-# Initialise the spider plot
-ax = plt.subplot(111, polar=True)
+poles = 'Amikuze'
 
-# Draw one axe per variable + add labels
-plt.xticks(angles[:-1], categories, color='grey', size=8)
+for poles in chiffresCles.index.unique():
+    # Prendre seulement le pole qu'on veut
+    chiffresClesPole = chiffresCles.loc[chiffresCles.index == poles, :]
 
-# Draw ylabels
-ax.set_rlabel_position(0)
-plt.yticks([10,20,30], ["10","20","30"], color="grey", size=7)
-plt.ylim(0,40)
+    # Dataframe des années étudiées
+    evol_sau_tot = pd.DataFrame(index = [1970, 1979, 1988, 2000, 2010, 2020])
+    evol_sau_moy = pd.DataFrame(index = [1970, 1979, 1988, 2000, 2010, 2020])
 
-# Plot data
-ax.plot(angles, values, linewidth=1, linestyle='solid')
+    # Prendre les années et la sau Totale
+    chiffresClesTot = chiffresClesPole.loc[:, ['annee','sau_tot_ha']]
 
-# Fill area
-ax.fill(angles, values, 'b', alpha=0.1)
+    # Prendre les années et la sau moyenne
+    chiffresClesMoy = chiffresClesPole.loc[:, ['annee','sau_moy_ha']]
 
-# Show the graph
-plt.show() 
+    # fusionner les deux infos importantes pour le total
+    evol_sau_tot=pd.merge(evol_sau_tot, chiffresClesTot, left_index=True, right_on='annee')
+    evol_sau_tot.reset_index(drop=True, inplace=True)
+    evol_sau_tot.set_index('annee', inplace=True)
 
-'''
+    # fusionner les deux infos importantes pour le moy
+    evol_sau_moy=pd.merge(evol_sau_moy, chiffresClesMoy, left_index=True, right_on='annee')
+    evol_sau_moy.reset_index(drop=True, inplace=True)
+    evol_sau_moy.set_index('annee', inplace=True)
+
+    ##############################
+    # Représentations graphiques #
+    ##############################
+
+    # Sau Totale
+    #evol_sau_tot.plot(kind='bar', ylim=(100000, 140000))
+    #plt.title('Evolution de la superficie agricole totale sur le pole de ' + poles)
+
+    # Sau moyenne
+    '''
+    evol_sau_moy.plot(color='r', linewidth=5, use_index=True)
+    plt.show()
+    '''
+
+    #Calcul du taux de variation SAU moyenne
+    listeMoy=[]
+
+    for annee in range(len(evol_sau_moy.index)-1):
+        tauxDeVariationMoy = list(evol_sau_moy.loc[evol_sau_moy.index==evol_sau_moy.index[annee+1], 'sau_moy_ha'])[0]-list(evol_sau_moy.loc[evol_sau_moy.index==evol_sau_moy.index[annee], 'sau_moy_ha'])[0]
+        tauxDeVariationMoy = tauxDeVariationMoy / list(evol_sau_moy.loc[evol_sau_moy.index==evol_sau_moy.index[annee], 'sau_moy_ha'])[0]
+        listeMoy.append(tauxDeVariationMoy)
+
+
+    #Calcul du taux de variation SAU totale
+    listeTot=[]
+    for annee in range(len(evol_sau_tot.index)-1):
+        tauxDeVariationTot = list(evol_sau_tot.loc[evol_sau_tot.index==evol_sau_tot.index[annee+1], 'sau_tot_ha'])[0]-list(evol_sau_tot.loc[evol_sau_tot.index==evol_sau_tot.index[annee], 'sau_tot_ha'])[0]
+        tauxDeVariationTot = tauxDeVariationTot / list(evol_sau_tot.loc[evol_sau_tot.index==evol_sau_tot.index[annee], 'sau_tot_ha'])[0]
+        listeTot.append(tauxDeVariationTot)
+
+    plt.plot([1970, 1979, 1988, 2000, 2010], listeMoy, color="r")
+    plt.plot([1970, 1979, 1988, 2000, 2010], listeTot, color="b")
+    titre = 'Taux de variation de la Sau Totale et de la Sau moyenne sur le pole de ' + str(poles)
+    plt.title(titre)
+    titre = titre + '.svg'
+    nomFormat = 'svg'
+    plt.legend(['sau moyenne', 'sau totale'], loc = 1)
+    plt.savefig(titre, format=nomFormat, bbox_inches="tight")
+    plt.show()
+
