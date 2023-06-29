@@ -9,7 +9,7 @@ import geopandas as gp
 # basque, regroupées en un dictionnaire
 evol_nb_exploit = {
     'Amikuze': pd.read_table("./fichiersParPole/fts_ra2020_amikuze/evolution_n_exploit_sau-Tableau 1.csv", sep=";",decimal=","),
-    'Cote Basque Adour': pd.read_table("./fichiersParPole/fts_ra2020_cote_basque_adour/evolution_n_exploit_sau-Tableau 1.csv", sep=";",decimal=","),
+    'Côte Basque Adour': pd.read_table("./fichiersParPole/fts_ra2020_cote_basque_adour/evolution_n_exploit_sau-Tableau 1.csv", sep=";",decimal=","),
     'Errobi': pd.read_table("./fichiersParPole/fts_ra2020_errobi/evolution_n_exploit_sau-Tableau 1.csv", sep=";",decimal=","),
     'Garazi Baigorri': pd.read_table("./fichiersParPole/fts_ra2020_garazi_baigorri/evolution_n_exploit_sau-Tableau 1.csv", sep=";",decimal=","),
     'Iholdi Oztibarre': pd.read_table("./fichiersParPole/fts_ra2020_iholdi_oztibarre/evolution_n_exploit_sau-Tableau 1.csv", sep=";",decimal=","),
@@ -25,7 +25,7 @@ evol_nb_exploit = {
 # contenant le nombre d'exploitation
 # sur plusieures années par pole
 df_evol_nb_exploit = pd.DataFrame(
-    index=['Amikuze','Cote Basque Adour','Errobi',
+    index=['Amikuze','Côte Basque Adour','Errobi',
            'Garazi Baigorri','Iholdi Oztibarre','Nive Adour',
            'Pays de Bidache','Pays d\'Hasparren','Soule Xiberoa',
            'Sud Pays Basque','Ca du Pays Basque','France'],
@@ -33,7 +33,7 @@ df_evol_nb_exploit = pd.DataFrame(
 )
 
 df_evol_sau = pd.DataFrame(
-    index=['Amikuze','Cote Basque Adour','Errobi',
+    index=['Amikuze','Côte Basque Adour','Errobi',
            'Garazi Baigorri','Iholdi Oztibarre','Nive Adour',
            'Pays de Bidache','Pays d\'Hasparren','Soule Xiberoa',
            'Sud Pays Basque','Ca du Pays Basque','France'],
@@ -126,14 +126,14 @@ for i in range(len(tauxDecennaleNbExploit)):
 
 # Ajout des taux variations a df_evol_nb_exploit
 ls=pd.Series(tauxDecennaleNbExploit)
-df_evol_nb_exploit['taux_decennale']=ls.values
+df_evol_nb_exploit['taux_decennal']=ls.values
 ls=pd.Series(tauxNbExploit)
 df_evol_nb_exploit['taux_1970-2020']=ls.values
 ls=pd.Series(tauxNbExploit2010et2020)
 df_evol_nb_exploit['taux_2010-2020']=ls.values
 # Ajout des taux variations a df_evol_sau
 ls=pd.Series(tauxDecennaleSauMoy)
-df_evol_sau['taux_decennale']=ls.values
+df_evol_sau['taux_decennal']=ls.values
 ls=pd.Series(tauxSauMoy)
 df_evol_sau['taux_1970-2020']=ls.values
 ls=pd.Series(tauxSauMoy2010et2020)
@@ -148,28 +148,35 @@ for i in range(len(nbExploitFrance)):
 
 
 """
-Représentation évolution taux décennale nombre exploitation et sau --------------------------
+Représentation évolution taux décennal nombre exploitations et sau --------------------------
 """
 
 # Récupération des noms des poles
 label=list(df_evol_sau.index)
 # Suppression de la France
 s = label.pop(11)
-# Récupération des valeurs taux décennale nb exploit
-txDecNbExploit=list(df_evol_nb_exploit['taux_decennale'].values)
+la = label.pop(10)
+# Récupération des valeurs taux décennal nb exploit
+txDecNbExploit=list(df_evol_nb_exploit['taux_decennal'].values)
 # Suppression de la France
 s = txDecNbExploit.pop(11)
-# Récupération des valeurs taux décennale sau
-txDecSauMoy=list(df_evol_sau['taux_decennale'].values)
+lb = txDecNbExploit.pop(10)
+# Récupération des valeurs taux décennal sau
+txDecSauMoy=list(df_evol_sau['taux_decennal'].values)
 # Suppression de la France
 s = txDecSauMoy.pop(11)
-plt.barh(label,width=txDecNbExploit,color='red')
+lc = txDecSauMoy.pop(10)
+plt.barh(label,width=txDecNbExploit,color='#ff2c2c')
 for i in range(len(txDecNbExploit)):
     plt.text(txDecNbExploit[i]/2,i-0.15,str(txDecNbExploit[i])+' %',ha='center',color='white')
-plt.barh(label,width=txDecSauMoy,color='green')
+plt.barh(la,width=lb,color='#c30010')
+plt.text(lb/2,10-0.15,str(lb)+' %',ha='center',color='white')
+plt.barh(label,width=txDecSauMoy,color='#46923c')
 for i in range(len(txDecSauMoy)):
     plt.text(txDecSauMoy[i]/2,i-0.15,str(txDecSauMoy[i])+'% ',ha='center',color='white')
-plt.xlabel('taux décennale nombre d\'exploitation    taux décennale sau')
+plt.barh(la,width=lc,color='#276221')
+plt.text(lc/2,10-0.15,str(lc)+'% ',ha='center',color='white')
+plt.xlabel('      taux décennal                                    taux décennal \nnombre d\'exploitations                             sau moyen')
 #plt.savefig('./assets/evol_tx_dec.svg',format='svg',bbox_inches='tight')
 plt.show()
 
@@ -190,7 +197,7 @@ dfToPlot.plot(colormap='YlGn',
 plt.grid(axis='y', which='both')
 plt.legend(bbox_to_anchor=(1,1))
 
-plt.title('Série chronologique évolution nombre d\'exploitation')
+plt.title('Série chronologique de l\'évolution \n du nombre d\'exploitations')
 #plt.savefig('./assets/Serie_chrono_evol.svg',format='svg',bbox_inches='tight')
 plt.show()
 
@@ -203,7 +210,7 @@ dfComparaisonToPlot.plot(colormap='winter',
 plt.grid(axis='y', which='both')
 plt.rc('axes',axisbelow=True)
 plt.legend(bbox_to_anchor=(1,1))
-plt.title('Série chronologique évolution nombre d\'exploitation \n au niveau national')
+plt.title('Série chronologique de l\'évolution \ndu nombre d\'exploitations au niveau national')
 #plt.savefig('./assets/Serie_chrono_evol_national.svg',format='svg',bbox_inches='tight')
 plt.show()
 
@@ -266,21 +273,21 @@ text=["micro\nexploitation\n","petite\nexploitation\n",
       "moyenne\nexploitation\n","grande\nexploitation\n"]
 
 legend_elm=[Line2D([0],[0],markerfacecolor=color[0],marker='o',markersize=5,
-                   color='w',alpha=0.5,label='Micro exploitation 2010'),
+                   color='w',alpha=0.5,label='Micro-exploitations 2010'),
             Line2D([0],[0],markerfacecolor=color[0],marker='o',markersize=5,
-                   color='w',label='Micro exploitation 2020'),
+                   color='w',label='Micro-exploitations 2020'),
             Line2D([0],[0],markerfacecolor=color[1],marker='o',markersize=5,
-                   color='w',alpha=0.5,label='Petite exploitation 2010'),
+                   color='w',alpha=0.5,label='Petites exploitations 2010'),
             Line2D([0],[0],markerfacecolor=color[1],marker='o',markersize=5,
-                   color='w',label='Petite exploitation 2020'),
+                   color='w',label='Petites exploitations 2020'),
             Line2D([0],[0],markerfacecolor=color[2],marker='o',markersize=5,
-                   color='w',alpha=0.5,label='Moyenne exploitation 2010'),
+                   color='w',alpha=0.5,label='Moyennes exploitations 2010'),
             Line2D([0],[0],markerfacecolor=color[2],marker='o',markersize=5,
-                   color='w',label='Moyenne exploitation 2020'),
+                   color='w',label='Moyennes exploitations 2020'),
             Line2D([0],[0],markerfacecolor=color[3],marker='o',markersize=5,
-                   color='w',alpha=0.5,label='Grande exploitation 2010'),
+                   color='w',alpha=0.5,label='Grandes exploitations 2010'),
             Line2D([0],[0],markerfacecolor=color[3],marker='o',markersize=5,
-                   color='w',label='Grande exploitation 2020')]
+                   color='w',label='Grandes exploitations 2020')]
 
 for index,row in df_evol_nb_exploit.iterrows():
     if index != 'France':
@@ -290,11 +297,11 @@ for index,row in df_evol_nb_exploit.iterrows():
         x2 = row[13:17]
         y1 = row[17:21]
         y2 = row[21:]
-        plt.xlabel("Nombre exploitation 2010 - 2020")
-        plt.ylabel("Surface exploitation 2010 - 2020")
-        plt.legend(handles=legend_elm,bbox_to_anchor=(1,1))
+        plt.xlabel("Nombre exploitations 2010 - 2020")
+        plt.ylabel("Sau totale 2010 - 2020")
         plt.grid(which='both')
         plt.title(str(index))
+        plt.legend(handles=legend_elm,bbox_to_anchor=(1,1),loc="upper left")
         #plt.savefig(f'./assets/{index}.svg',format='svg',bbox_inches='tight')
         plt.show()
 
