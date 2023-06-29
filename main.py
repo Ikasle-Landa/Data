@@ -58,7 +58,7 @@ ax.set_axis_off()
 ctx.add_basemap(ax, crs = geoDonneesAge.crs)
 
 """
-
+"""
 
 #Diagramme en camembert
 
@@ -90,7 +90,7 @@ for i in pole:
     plt.legend(label, bbox_to_anchor=(1, 0.2, 0.5, 0.5))
     plt.title(label = "Devenir d'exploitation, Pôle : " + i)
     plt.savefig('./Graphiques/Camembert_'+i+'.svg',bbox_inches='tight',format='svg')
-
+"""
 
 
 
@@ -384,9 +384,10 @@ folium.LayerControl(collapsed=False).add_to(m)
 
 m.save("CarteVariation1970-2020.html")
 
-
+"""
 
 dfCommunes = pd.read_table('Data/capb-contour-des-communes.csv',sep=";")
+geoDonneesPole = gpd.read_file("contour_capb_poles_territoriaux.geojson")
 
 
 dfSauPole = pd.read_table('Data/SAU_ha_Pole.csv',sep=";",decimal=',')
@@ -405,18 +406,18 @@ for i in range(len(poles)) :
         if dfCommunes['Pole_Territoriaux'][j] == poles[i]:
             total += dfCommunes['surf_ha'][j]
     dfSauPole['surf_ha'][i] = total
-    dfSauPole['pour_sau_pole'][i] = (dfSauPole['sau_tot_ha'][i] / total) * 100
+    dfSauPole['pour_sau_pole'][i] = (dfSauPole['sau_tot_ha'][i] / total)
 
 totalSau = dfSauPole['sau_tot_ha'].sum()
 totalSurfHa = dfSauPole['surf_ha'].sum()
 
-pourSurfAgr = (totalSau / totalSurfHa) * 100
+pourSurfAgr = (totalSau / totalSurfHa)
 
 dfSauPole.loc[10]=['ca_du_pays_basque',totalSau,totalSurfHa,pourSurfAgr]
 
+geoDonneesPole.merge(dfSauPole,on='echelle')
 
 
-#Carte des 
 
 dfVariation = pd.read_table('Data/variation1970-2020.csv', sep=';')
 l = list(dfVariation.columns)
@@ -424,8 +425,10 @@ l[0] = 'echelle'
 dfVariation.columns = l
 
 gdfVariation = geoDonneesPole.merge(dfVariation, on='echelle')
-#variation_decennale
 
+
+
+#variation_decennale
 
 m = folium.Map(location=[43.25,-1.29], # center of the folium map
                 tiles = "OpenStreetMap",
@@ -440,9 +443,9 @@ folium.Choropleth(geo_data=gdfVariation,
                 fill_color='Reds_r',
                 legend_name="Taux de variation du nombre d'exploitation entre 1970 & 2020",
                 fill_opacity=0.95,
-                smooth_factor=0,
                 Highlight= True,
                 line_color = "#0000",).add_to(m)
+
 
 style_function = lambda x: {'fillColor': '#ffffff', 
                             'color':'#000000', 
@@ -466,13 +469,23 @@ IHM = folium.features.GeoJson(
     )
 )
 m.add_child(IHM)
-m.keep_in_front(IHM)
 
 
 
-# Ajout d'une interface de contrôle
-folium.LayerControl(collapsed=False).add_to(m)
+geoPoint = pd.read_table('Data/Points_geographiques.csv',sep=';',decimal='.')
+
+dfSauPole = dfSauPole.merge(geoPoint, on='echelle')
+
+
+for i in range(len(dfSauPole['echelle'])):
+    folium.Circle(
+        radius=5000*dfSauPole['pour_sau_pole'][i],
+        location=[dfSauPole['latitude'][i],dfSauPole['longitude'][i]],
+        popup=dfSauPole['echelle'][i] + ' : ' + str(round(dfSauPole['pour_sau_pole'][i],2)*100) + '%',
+        color="#008000",
+        fill=True,
+        fill_color="#008000").add_to(m)
+
 
 
 m.save("CarteVariation1970-2020.html")
-"""
