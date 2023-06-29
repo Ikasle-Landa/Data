@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 #                               des                             #
 #                             données                           #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-
+"""
 geoDonnees = gpd.read_file("rga2020_dataviz_challenge.geojson")
 geoDonneesPole = gpd.read_file("contour_capb_poles_territoriaux.geojson")
 
@@ -32,11 +32,12 @@ ageParPole = chiffreCle.loc[chiffreCle["type"] == "age_moy", :]
 geoDonneesAge = geoDonnees.merge(ageParPole, on='echelle')
 
 mainDf = pd.read_table("Data/devenir_exploitation.csv", sep=";",decimal=",")
+mainDf.replace(0,nan, inplace=True)
 
 geoDonneesDevenirExploitation = geoDonnees.merge(mainDf, on="echelle")
 
 geoDonneesMainDf = geoDonneesPole.merge(mainDf, on="echelle")
-
+"""
 """
 ax = geoDonneesDevenirExploitation.plot(column="pas de départ du chef ou coexploitant envisagé dans l'immédiat",
                                         cmap="summer", 
@@ -57,7 +58,45 @@ ax.set_axis_off()
 ctx.add_basemap(ax, crs = geoDonneesAge.crs)
 
 """
+
+
+#Diagramme en camembert
+
+
+    
+
+dfDevenir = pd.read_table('Data/devenir_exploitation.csv',sep=';',decimal='.')
+
+pole = list(dfDevenir.columns)
+pole.pop(0)
+
+for i in pole:
+    plt.figure(figsize = (6, 6))
+    x = list(dfDevenir[i])
+    x.pop()
+    label = ["disparition au profit de l'agrandissement\nd'une ou plusieurs autres exploitations",
+            "disparition des terres au profit d'un usage\nnon agricole",
+            'ne sait pas',
+            "nombre d'exploitations non concernées",
+            "pas de départ du chef ou coexploitant\nenvisagé dans l'immédiat",
+            'reprise par un coexploitant,\nun membre de la famille ou un tiers']
+    myexplode = [0 for i in range(len(x))]
+    myexplode[x.index(max(x))] = 0.15
+    plt.pie(x,
+        colors = ['red', 'green', 'yellow','orange','blue','purple'],
+        explode = myexplode,
+        autopct = lambda x: str(round(x, 2)) + '%',
+        pctdistance = 0.7, labeldistance = 1.4)
+    plt.legend(label, bbox_to_anchor=(1, 0.2, 0.5, 0.5))
+    plt.title(label = "Devenir d'exploitation, Pôle : " + i)
+    plt.savefig('./Graphiques/Camembert_'+i+'.svg',bbox_inches='tight',format='svg')
+
+
+
+
 """
+
+
 devenirExploitation = {1:"pas de départ du chef ou coexploitant envisagé dans l'immédiat",
                        2:"disparition des terres au profit d'un usage non agricole",
                        3:"nombre d'exploitations non concernées",
@@ -65,6 +104,7 @@ devenirExploitation = {1:"pas de départ du chef ou coexploitant envisagé dans 
                        5:"ne sait pas",
                        6:"total d'exploitations concernées",
                        7:"disparition au profit de l'agrandissement d'une ou plusieurs autres exploitations"}
+
 
 
 for i in devenirExploitation:
@@ -121,18 +161,21 @@ for i in devenirExploitation:
     filename = 'carte' + str(i) + '.html'
     m.save(filename)
 """
+
+"""
 dfTemp = pd.read_table('Data/dimensions_exploitation.csv' ,sep=";",decimal=",")
 
 mainDf = mainDf.merge(dfTemp,how='right',right_on="echelle",left_on="echelle")
 
 mainDf.replace(-999,nan, inplace=True)
-
+"""
 
 
 #echelles = mainDf["echelle"].drop_duplicates()
-
+"""
 mainDf2010 = mainDf.loc[mainDf['annee'] == 2010, :] 
 mainDf2020 = mainDf.loc[mainDf['annee'] == 2020, :] 
+"""
 """
 dimension2010 = mainDf2010.pivot(index="dim", columns="echelle",values="n_exploit")
 
@@ -151,9 +194,9 @@ dimension2010 = dimension2010.reindex(columns=['microexploitations','petites','m
 dimension2010.plot(kind="bar", stacked=True, legend='reverse')
 plt.legend(bbox_to_anchor=(1.05,0.5), loc='upper left') # titre : Répartition de la taille des exploitations par pôles en 2010
 plt.show()
-
-dimension2020 = mainDf2020.pivot(index="dim", columns="echelle",values="n_exploit")
-
+"""
+#dimension2020 = mainDf2020.pivot(index="dim", columns="echelle",values="n_exploit")
+"""
 
 echelle = None
 for i in dimension2020 :
@@ -169,8 +212,8 @@ dimension2020 = dimension2020.reindex(columns=['microexploitations','petites','m
 dimension2020.plot(kind="bar", stacked=True, legend='reverse')
 plt.legend(bbox_to_anchor=(1.05,0.6), loc='upper left') # titre : Répartition de la taille des exploitations par pôles en 2020
 plt.show()
-
-
+"""
+"""
 dimension2010 = mainDf2010.pivot(index="dim", columns="echelle",values="sau_ha")
 
 dimension2020 = mainDf2020.pivot(index="dim", columns="echelle",values="sau_ha")
@@ -189,14 +232,16 @@ dimension2020 = dimension2020.T.reindex(columns=['microexploitations','petites',
 dimension2020.plot(kind="bar",title="Taux de variation des SAU entre 2010 & 2020", legend='reverse')
 plt.legend(bbox_to_anchor=(1.05,0.6), loc='upper left')
 plt.show()
-
-
+"""
+"""
 dfCaPB = pd.read_table('Data/dimension_ca_du_pays_basque.csv',sep=";",decimal=",")
 
 dfCaPB2010 = dfCaPB.loc[dfCaPB['annee'] == 2010,:]
 dfCaPB2020 = dfCaPB.loc[dfCaPB['annee'] == 2020,:]
 
 dfNbExpl2010 = dfCaPB2010.pivot(index="dim", columns="echelle",values="n_exploit")
+"""
+"""
 
 total = dfNbExpl2010['ca_du_pays_basque'].sum()
 
@@ -209,9 +254,9 @@ dfNbExpl2010.plot(kind="bar", stacked=True, legend='reverse')
 plt.legend(title="Pôles",bbox_to_anchor=(1.05,0.6), loc='upper left') # titre : Répartition de la taille des exploitations en 2010
 plt.title("Répartition du nombre d'exploitations par rapport à leur taille en 2010")
 plt.show()
-
-dfNbExpl2020 = dfCaPB2020.pivot(index="dim", columns="echelle",values="n_exploit")
-
+"""
+#dfNbExpl2020 = dfCaPB2020.pivot(index="dim", columns="echelle",values="n_exploit")
+"""
 total = dfNbExpl2020['ca_du_pays_basque'].sum()
 
 for i in range(len(dfNbExpl2020['ca_du_pays_basque'])):
@@ -223,15 +268,15 @@ dfNbExpl2020.plot(kind="bar", stacked=True, legend='reverse')
 plt.legend(title="Pôles",bbox_to_anchor=(1.05,0.6), loc='upper left') # titre : Répartition de la taille des exploitations en 2020
 plt.title("Répartition du nombre d'exploitations par rapport à leur taille en 2020")
 plt.show()
+"""
 
-
-
+"""
 dfNbExpl2010 = dfCaPB2010.pivot(index="dim", columns="echelle",values="sau_ha")
 
 dfNbExpl2020 = dfCaPB2020.pivot(index="dim", columns="echelle",values="sau_ha")
+"""
 
-
-
+"""
 for i in range(len(dfNbExpl2020['ca_du_pays_basque'])):
     val2010 = dfNbExpl2010['ca_du_pays_basque'][i]
     dfNbExpl2020['ca_du_pays_basque'][i] = (dfNbExpl2020['ca_du_pays_basque'][i] - val2010) / val2010 
@@ -272,9 +317,9 @@ for x in regroupementPole:
     plt.legend(title="Pôles",loc='upper right', bbox_to_anchor=(1.25, 1))
     fig.savefig('./Graphiques/Radar_SAU_2010_2020'+str(x)+'.svg',bbox_inches='tight',format='svg')
     plt.show()
-
 """
 
+"""
 dfVariation = pd.read_table('Data/variation1970-2020.csv', sep=';')
 l = list(dfVariation.columns)
 l[0] = 'echelle'
@@ -341,5 +386,93 @@ m.save("CarteVariation1970-2020.html")
 
 
 
-#dfCommunes = pd.read_table('Data/capb-contour-des-communes.csv',sep=";")
+dfCommunes = pd.read_table('Data/capb-contour-des-communes.csv',sep=";")
 
+
+dfSauPole = pd.read_table('Data/SAU_ha_Pole.csv',sep=";",decimal=',')
+dfSauPole['surf_ha'] = nan
+dfSauPole['pour_sau_pole'] = nan
+
+dfSauPole = dfSauPole.loc[dfSauPole['echelle'] != 'ca_du_pays_basque',:]
+dfSauPole.index = [i for i in range(10)]
+
+
+poles = list(dfSauPole['echelle'])
+
+for i in range(len(poles)) :
+    total = 0
+    for j in range(len(dfCommunes)):
+        if dfCommunes['Pole_Territoriaux'][j] == poles[i]:
+            total += dfCommunes['surf_ha'][j]
+    dfSauPole['surf_ha'][i] = total
+    dfSauPole['pour_sau_pole'][i] = (dfSauPole['sau_tot_ha'][i] / total) * 100
+
+totalSau = dfSauPole['sau_tot_ha'].sum()
+totalSurfHa = dfSauPole['surf_ha'].sum()
+
+pourSurfAgr = (totalSau / totalSurfHa) * 100
+
+dfSauPole.loc[10]=['ca_du_pays_basque',totalSau,totalSurfHa,pourSurfAgr]
+
+
+
+#Carte des 
+
+dfVariation = pd.read_table('Data/variation1970-2020.csv', sep=';')
+l = list(dfVariation.columns)
+l[0] = 'echelle'
+dfVariation.columns = l
+
+gdfVariation = geoDonneesPole.merge(dfVariation, on='echelle')
+#variation_decennale
+
+
+m = folium.Map(location=[43.25,-1.29], # center of the folium map
+                tiles = "OpenStreetMap",
+                min_zoom=9, max_zoom=10, # zoom range
+                zoom_start=10) # initial zoom
+
+
+folium.Choropleth(geo_data=gdfVariation,
+                data=gdfVariation,
+                columns=["echelle",'taux_1970-2020'],
+                key_on="feature.properties.echelle",
+                fill_color='Reds_r',
+                legend_name="Taux de variation du nombre d'exploitation entre 1970 & 2020",
+                fill_opacity=0.95,
+                smooth_factor=0,
+                Highlight= True,
+                line_color = "#0000",).add_to(m)
+
+style_function = lambda x: {'fillColor': '#ffffff', 
+                            'color':'#000000', 
+                            'fillOpacity': 0.1, 
+                            'weight': 0.1}
+
+highlight_function = lambda x: {'fillColor': '#000000', 
+                                'color':'#000000', 
+                                'fillOpacity': 0.50, 
+                                'weight': 0.1}
+
+IHM = folium.features.GeoJson(
+    data = gdfVariation,
+    style_function=style_function, 
+    control=False,
+    highlight_function=highlight_function, 
+    tooltip=folium.features.GeoJsonTooltip(
+        fields=['echelle','taux_1970-2020'],
+        aliases=['echelle','Taux de variation :'],
+        style=("background-color: white; color: #222222; font-family: arial; font-size: 12px; padding: 10px;") 
+    )
+)
+m.add_child(IHM)
+m.keep_in_front(IHM)
+
+
+
+# Ajout d'une interface de contrôle
+folium.LayerControl(collapsed=False).add_to(m)
+
+
+m.save("CarteVariation1970-2020.html")
+"""
