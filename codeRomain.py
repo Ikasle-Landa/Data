@@ -1,3 +1,6 @@
+"""
+@author: Romain
+"""
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 import numpy as np
@@ -50,7 +53,7 @@ Cartographie des pôles pays basque ---------------------------------
 filename = "./rga2020_dataviz_challenge.geojson"
 file = open(filename)
 df = gp.read_file(file)
-"""
+
 # Filtrage de ca_du_pays_basque
 # qui représente l'ensemble des pôles
 dfSansCaPaysBasque = df.loc[df["echelle"] != "ca_du_pays_basque",:]
@@ -63,7 +66,7 @@ dfSansCaPaysBasque.plot(column="echelle", cmap="YlGn", legend=True,
      "fmt":"{:.0f}"})
 plt.title('Cartographie des pôles')
 plt.show()
-"""
+
 """
 Construction des dataframes ---------------------------------------------------------------
 """
@@ -154,7 +157,7 @@ for i in range(len(nbExploitFrance)):
 """
 Représentation évolution taux décennal nombre exploitations et sau --------------------------
 """
-"""
+
 # Récupération des noms des poles
 label=list(df_evol_sau.index)
 # Suppression de la France
@@ -186,12 +189,12 @@ plt.show()
 
 # df_evol_nb_exploit.to_csv("./assets/evol.csv",decimal=",",sep=";")
 # df_evol_sau.to_csv("./assets/evol_sau.csv",decimal=",",sep=";")
-"""
+
 
 """
 Représentation chronologique nb exploitations ----------------------
 """
-"""
+
 # Inversion des colonnes et lignes
 # pour réaliser le graphique chronologique
 dfToPlot = df_evol_nb_exploit.iloc[0:9,0:6].transpose()
@@ -217,7 +220,7 @@ plt.legend(bbox_to_anchor=(1,1))
 plt.title('Série chronologique de l\'évolution \ndu nombre d\'exploitations au niveau national')
 #plt.savefig('./assets/Serie_chrono_evol_national.svg',format='svg',bbox_inches='tight')
 plt.show()
-"""
+
 
 """
 Bubble plot ca_du_pays_basque --------------------------------------------------------
@@ -326,12 +329,9 @@ for index,row in df_evol_nb_exploit.iterrows():
             else:
                 plt.annotate(text[i]+"2010",xy=(x2[i],y2[i]),xytext=(x2[i]-maxX2,y2[i]+maxY2),
                          arrowprops=dict(arrowstyle='-'))
-        # for i in range(len(text)):
-        #     plt.annotate(text[i]+"2010",xy=(x2[i],y2[i]),xytext=(x2[i]-(x2[i]*0.2),y2[i]+(y2[i]*0.1)))
         plt.xlabel("Nombre exploitations 2010 - 2020")
         plt.ylabel("Sau totale 2010 - 2020")
         
         plt.title(str(index))
-        #plt.legend(handles=legend_elm,bbox_to_anchor=(1,1),loc="upper left")
         #plt.savefig(f'./assets/{index}.svg',format='svg',bbox_inches='tight')
         plt.show()
