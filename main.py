@@ -3,12 +3,8 @@ import pandas as pd
 import numpy as np
 from flask import Flask
 from numpy import nan
-import contextily as cx
 import matplotlib.pyplot as plt
 import matplotlib.markers as mrk
-import glob
-import mapclassify
-import glob
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #                           Importation                         #
@@ -536,12 +532,8 @@ plt.show()
 #                                au début                       #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-
-
 # I m p o r t a t i o n
 chiffresCles = pd.read_table("fichier_traite_rga/nombre_exploitation-Tableau 1.csv", sep=';', index_col=0, na_values=-999, decimal=',')
-
-poles = 'Amikuze'
 
 for poles in chiffresCles.index.unique():
     # Prendre seulement le pole qu'on veut
@@ -571,15 +563,16 @@ for poles in chiffresCles.index.unique():
     # Représentations graphiques #
     ##############################
 
+    '''
     # Sau Totale
     #evol_sau_tot.plot(kind='bar', ylim=(100000, 140000))
     #plt.title('Evolution de la superficie agricole totale sur le pole de ' + poles)
 
     # Sau moyenne
-    '''
+    
     evol_sau_moy.plot(color='r', linewidth=5, use_index=True)
     plt.show()
-    '''
+    
 
     #Calcul du taux de variation SAU moyenne
     listeMoy=[]
@@ -606,4 +599,44 @@ for poles in chiffresCles.index.unique():
     plt.legend(['sau moyenne', 'sau totale'], loc = 1)
     plt.savefig(titre, format=nomFormat, bbox_inches="tight")
     plt.show()
+    '''
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#                                 Etudes                        #
+#                                au début                       #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+# I m p o r t a t i o n
+chiffresCles = pd.read_table("fichier_traite_rga/age-Tableau 1.csv", sep=';', index_col=0, na_values=-999, decimal=',')
+
+for poles in chiffresCles.index.unique():
+    # Prendre seulement le pole qu'on veut
+    chiffresClesPole = chiffresCles.loc[chiffresCles.index == poles, :]
+
+    # Prendre l'année qu'on veut
+    agesEtCategories = chiffresClesPole.loc[chiffresClesPole['annee']==2010, ['age_5', 'valeur']]
+    agesEtCategories.reset_index(drop=True, inplace=True)
+    agesEtCategories.set_index('age_5', inplace=True)
+    agesEtCategories.sort_index(axis = 1, ascending = False, inplace = True)
+
+
+    ##############################
+    # Représentations graphiques #
+    ##############################
+
+    # Diagramme barre des âges
+    agesEtCategories.plot(kind='bar')
+
+    # Ajout du titre
+    titre = 'Répartition des âges des exploitants sur le pole de ' + str(poles) + ' en 2010'
+    plt.title(titre)
+    plt.legend(['sau moyenne', 'sau totale'], loc = 1)
+
+    '''
+    # Sauvegarde du fichier
+    titre = titre + '.svg'
+    nomFormat = 'svg'
+    plt.savefig(titre, format=nomFormat, bbox_inches="tight")
+    plt.show()
+    '''
 
