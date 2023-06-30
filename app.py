@@ -50,19 +50,11 @@ geoDonneesMainDf = geoDonneesPole.merge(mainDf, on="echelle")
 
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#                            Backend du                         #
-#                             serveur                           #
+#                            Génération                         #
+#                            de la page                         #
 #                               web                             #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-app = Flask(__name__)
-
-@app.route("/") # Page De chargement
-def chargement():
-    return render_template_string(
-        open("chargement.html").read())
-
-@app.route("/accueil") # Page D'accueil
 def Accueil():
     dfVariation = pd.read_table('Data/variation1970-2020.csv', sep=';')
     l = list(dfVariation.columns)
@@ -137,12 +129,7 @@ def Accueil():
     body_html = m.get_root().html.render()
     script = m.get_root().script.render()    
     
-    return render_template_string(
-        open("indexV2.html").read(),
-        header=header,
-        body_html=body_html,
-        script=script,
-    )
+    return header, body_html, script
     
 # @app.route("/carte<int:numero>")
 # def carte(numero : int):
@@ -220,7 +207,13 @@ def Accueil():
     
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    accueil = Accueil()
+    with open("header", "w") as f:
+        f.write(accueil[0])
+    with open("body", "w") as f:
+        f.write(accueil[1])
+    with open("script", "w") as f:
+        f.write(accueil[2])
     
     
 # Codes couleurs
