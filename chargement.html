@@ -213,7 +213,7 @@
         }
 
         chargementEnCours = true;
-        étapeChargement = 1;
+        etapeChargement = 1;
 
         function deleteStars() {
             var elements = document.getElementsByClassName("etoile");
@@ -223,13 +223,13 @@
         }
 
         async function demo() {
-                while (chargementEnCours && étapeChargement < 20) {
+                while (chargementEnCours && etapeChargement < 20) {
                     await sleep(200);
-                    document.getElementById("chargement").innerHTML = "Chargement : " + étapeChargement*5 + "%";
-                    document.getElementById("logoIkasleLanda").style.left = étapeChargement*5 + "%";
-                    étapeChargement++;
+                    document.getElementById("chargement").innerHTML = "Chargement : " + etapeChargement*5 + "%";
+                    document.getElementById("logoIkasleLanda").style.left = etapeChargement*5 + "%";
+                    etapeChargement++;
                 }
-                if (étapeChargement >= 20) {
+                if (etapeChargement >= 20) {
                     window.location.href = "accueil"
                 }
         }
