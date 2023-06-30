@@ -50,7 +50,7 @@ Cartographie des pôles pays basque ---------------------------------
 filename = "./rga2020_dataviz_challenge.geojson"
 file = open(filename)
 df = gp.read_file(file)
-
+"""
 # Filtrage de ca_du_pays_basque
 # qui représente l'ensemble des pôles
 dfSansCaPaysBasque = df.loc[df["echelle"] != "ca_du_pays_basque",:]
@@ -63,15 +63,19 @@ dfSansCaPaysBasque.plot(column="echelle", cmap="YlGn", legend=True,
      "fmt":"{:.0f}"})
 plt.title('Cartographie des pôles')
 plt.show()
-
+"""
 """
 Construction des dataframes ---------------------------------------------------------------
 """
 
+# Importation des données résidences secondaires
+tauxResSec = pd.read_table("./fichiersParPole/residence_secondaire.csv",sep=";",decimal=",") 
+dfTauxDecennalResSec = tauxResSec.iloc[:,[38,39,40,41]] 
 # Importation des données du 
 # Pays Basque
 nbExploitPaysBasque = pd.read_table("./fichiersParPole/fts_ra2020_ca_du_pays_basque/evolution_n_exploit_sau-Tableau 1.csv", sep=";")
-nbExploitFrance = [1591036,1270085,1088731,763953,603884,496365]
+dfFrance = pd.read_table("./fichiersParPole/france/nombre-d-exploitations-agricoles-france.csv",sep=",")
+nbExploitFrance = dfFrance.iloc[:,1]
 
 # Initialisation du dataframe
 # contenant le nombre d'exploitation
@@ -116,13 +120,13 @@ for i in range(len(df_evol_nb_exploit)):
 # calcul des taux
 for i in range(len(tauxDecennaleNbExploit)):
     x=float(tauxDecennaleNbExploit[i][0]/tauxDecennaleNbExploit[i][1])
-    tauxDecennaleNbExploit[i]=round(((racineN(x,5)-1)*100),2) 
-    tauxNbExploit[i]=round(float((tauxNbExploit[i][0]-tauxNbExploit[i][1])/tauxNbExploit[i][1]),2)
-    tauxNbExploit2010et2020[i]=round(float((tauxNbExploit2010et2020[i][0]-tauxNbExploit2010et2020[i][1])/tauxNbExploit2010et2020[i][1]),2)
+    tauxDecennaleNbExploit[i]=round(((racineN(x,5)-1)*100),1) 
+    tauxNbExploit[i]=round(float((tauxNbExploit[i][0]-tauxNbExploit[i][1])/tauxNbExploit[i][1]),1)
+    tauxNbExploit2010et2020[i]=round(float((tauxNbExploit2010et2020[i][0]-tauxNbExploit2010et2020[i][1])/tauxNbExploit2010et2020[i][1]),1)
     x=float(tauxDecennaleSauMoy[i][0]/tauxDecennaleSauMoy[i][1])
-    tauxDecennaleSauMoy[i]=round(((racineN(x,5)-1)*100),2) 
-    tauxSauMoy[i]=round(float((tauxSauMoy[i][0]-tauxSauMoy[i][1])/tauxSauMoy[i][1]),2)
-    tauxSauMoy2010et2020[i]= round(float((tauxSauMoy2010et2020[i][0]-tauxSauMoy2010et2020[i][1])/tauxSauMoy2010et2020[i][1]),2)
+    tauxDecennaleSauMoy[i]=round(((racineN(x,5)-1)*100),1) 
+    tauxSauMoy[i]=round(float((tauxSauMoy[i][0]-tauxSauMoy[i][1])/tauxSauMoy[i][1]),1)
+    tauxSauMoy2010et2020[i]= round(float((tauxSauMoy2010et2020[i][0]-tauxSauMoy2010et2020[i][1])/tauxSauMoy2010et2020[i][1]),1)
 
 # Ajout des taux variations a df_evol_nb_exploit
 ls=pd.Series(tauxDecennaleNbExploit)
@@ -150,7 +154,7 @@ for i in range(len(nbExploitFrance)):
 """
 Représentation évolution taux décennal nombre exploitations et sau --------------------------
 """
-
+"""
 # Récupération des noms des poles
 label=list(df_evol_sau.index)
 # Suppression de la France
@@ -182,12 +186,12 @@ plt.show()
 
 # df_evol_nb_exploit.to_csv("./assets/evol.csv",decimal=",",sep=";")
 # df_evol_sau.to_csv("./assets/evol_sau.csv",decimal=",",sep=";")
-
+"""
 
 """
 Représentation chronologique nb exploitations ----------------------
 """
-
+"""
 # Inversion des colonnes et lignes
 # pour réaliser le graphique chronologique
 dfToPlot = df_evol_nb_exploit.iloc[0:9,0:6].transpose()
@@ -213,11 +217,12 @@ plt.legend(bbox_to_anchor=(1,1))
 plt.title('Série chronologique de l\'évolution \ndu nombre d\'exploitations au niveau national')
 #plt.savefig('./assets/Serie_chrono_evol_national.svg',format='svg',bbox_inches='tight')
 plt.show()
-
+"""
 
 """
 Bubble plot ca_du_pays_basque --------------------------------------------------------
 """
+
 size=[150,150,150,150]
 color=["red","orange","blue","green"]
 
@@ -269,8 +274,7 @@ df_evol_nb_exploit['sau_petite_2020']=sauPetite2020
 df_evol_nb_exploit['sau_moyenne_2020']=sauMoyenne2020
 df_evol_nb_exploit['sau_grande_2020']=sauGrande2020
 
-text=["micro\nexploitation\n","petite\nexploitation\n",
-      "moyenne\nexploitation\n","grande\nexploitation\n"]
+text=["Micro\n","Petite\n","Moyenne\n","Grande\n"]
 
 legend_elm=[Line2D([0],[0],markerfacecolor=color[0],marker='o',markersize=5,
                    color='w',alpha=0.5,label='Micro-exploitations 2010'),
@@ -291,17 +295,43 @@ legend_elm=[Line2D([0],[0],markerfacecolor=color[0],marker='o',markersize=5,
 
 for index,row in df_evol_nb_exploit.iterrows():
     if index != 'France':
-        a = plt.scatter(row[9:13],row[17:21],s=size,color=color)
-        b = plt.scatter(row[13:17],row[21:],s=size,color=color,alpha=0.5)
         x1 = row[9:13]
         x2 = row[13:17]
         y1 = row[17:21]
         y2 = row[21:]
+        plt.grid(which='both')
+        a = plt.scatter(x1,y1,s=size,color=color)
+        b = plt.scatter(x2,y2,s=size,color=color,alpha=0.5)
+        maxX1 = max(x1)*0.07
+        maxY1 = max(y1)*0.03
+        maxX2 = max(x2)*0.05
+        mY2 = max(y2)
+        mX2 = max(x2)
+        mX1 = max(x1)
+        mY1 = max(y1)
+        maxY2 = max(y2)*0.1
+        for i in range(len(text)):
+            if (y1[i] > mY1*0.7) & (x1[i] > mX1*0.6):
+                plt.annotate(text[i]+"2020",xy=(x1[i],y1[i]),xytext=(x1[i]-(maxX1/2),y1[i]-maxY1*6),
+                            arrowprops=dict(arrowstyle='-'))
+            elif (x1[i] > mX1*0.1) & (y1[i] <= mY1*0.95) & (y1[i] > mY1*0.45):
+                plt.annotate(text[i]+"2020",xy=(x1[i],y1[i]),xytext=(x1[i]-maxX1*3,y1[i]+maxY1),
+                            arrowprops=dict(arrowstyle='-'))
+            else:
+                plt.annotate(text[i]+"2020",xy=(x1[i],y1[i]),xytext=(x1[i]+maxX1,y1[i]-maxY1),
+                            arrowprops=dict(arrowstyle='-'))
+            if y2[i] > mY2*0.8:
+                plt.annotate(text[i]+"2010",xy=(x2[i],y2[i]),xytext=(x2[i]-(maxX2/2),y2[i]-maxY2*2),
+                         arrowprops=dict(arrowstyle='-'))
+            else:
+                plt.annotate(text[i]+"2010",xy=(x2[i],y2[i]),xytext=(x2[i]-maxX2,y2[i]+maxY2),
+                         arrowprops=dict(arrowstyle='-'))
+        # for i in range(len(text)):
+        #     plt.annotate(text[i]+"2010",xy=(x2[i],y2[i]),xytext=(x2[i]-(x2[i]*0.2),y2[i]+(y2[i]*0.1)))
         plt.xlabel("Nombre exploitations 2010 - 2020")
         plt.ylabel("Sau totale 2010 - 2020")
-        plt.grid(which='both')
+        
         plt.title(str(index))
-        plt.legend(handles=legend_elm,bbox_to_anchor=(1,1),loc="upper left")
+        #plt.legend(handles=legend_elm,bbox_to_anchor=(1,1),loc="upper left")
         #plt.savefig(f'./assets/{index}.svg',format='svg',bbox_inches='tight')
         plt.show()
-
